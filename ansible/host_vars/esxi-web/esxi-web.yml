@@ -29,7 +29,7 @@ log_level: info
 ffsync_port: 5000
 syncserver_batch_upload_enabled: true
 syncserver_force_wsgi_environ: false
-syncserver_public_url: https://ffsync.garudalinux.org
+syncserver_public_url: http://ffsync.garudalinux.org
 syncserver_sqluri: sqlite:////data/syncserver.db
 
 # Searxng
