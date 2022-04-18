@@ -1,0 +1,9 @@
+---
+- hosts: garuda
+  gather_facts: no
+  become: true
+  tasks:
+    - import_role:
+        name: common
+    - import_role:
+        name: nico

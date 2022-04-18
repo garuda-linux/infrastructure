@@ -1,0 +1,32 @@
+---
+actual_hostname: esxi-repo
+ansible_host: 65.108.140.36
+ansible_port: 223
+chaotic_builder: true
+docker_compose: true
+
+# Toolbox
+caur_cluster_name: maximus
+caur_deploy_label: maximus
+caur_packager: "Garuda Builder <team@garudalinux.org>"
+caur_primary: true
+caur_routines: "/var/cache/chaotic/routines"
+caur_sign_key: "0706B90D37D9B881"
+caur_sign_realname: "Nico Jensch"
+caur_sign_user: nico
+caur_sign_user_home: /root
+caur_telegram_tag: "@dr460nf1r3"
+caur_url: http://repo.garudalinux.org/repos/garuda/x86_64
+repoctl_config: /etc/chaotic/repoctl.toml
+
+# Syncthing
+puid: 1000
+pgid: 1000
+tz: Europe/Berlin
+
+# Diun
+diun_providers_docker: true
+diun_watch_schedule: "@hourly"
+diun_watch_workers: 20
+log_json: false
+log_level: info

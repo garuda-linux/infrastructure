@@ -1,0 +1,18 @@
+#!/bin/bash
+
+set -e
+
+if [ ! -e ./.env ]; then
+  read -p 'Domain that will serve the mirror: ' domain
+  read -p 'Your email address: ' email
+  echo "DOMAIN_NAME=$domain" > ./.env
+  echo "EMAIL=$email" >> ./.env
+fi
+
+source .env
+
+if [ ! -e ./letsencrypt/etc/renewal/chaotic.conf ]; then
+  docker run -p 80:80 -p 443:443 -it --rm -v "$PWD/letsencrypt/etc:/etc/letsencrypt" -v "$PWD/letsencrypt/var:/var/lib/letsencrypt" certbot/certbot certonly --standalone --agree-tos --cert-name chaotic -n -m "$EMAIL" -d "$DOMAIN_NAME"
+fi
+
+docker-compose -f docker-compose.yml up -d

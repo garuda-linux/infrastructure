@@ -1,0 +1,38 @@
+- name: Install Nico's core set of packages
+  pacman:
+    name:
+      - fish
+      - git
+      - htop
+      - micro
+      - ripgrep
+      - tmux
+    state: present
+- name: Create directory for Nico's config.fish
+  file:
+    group: nico
+    mode: 0755
+    owner: nico
+    path: /home/nico/.config/fish/
+    state: directory
+- name: Install Nico's fish configuration
+  copy:
+    dest: /home/nico/.config/fish/
+    group: nico
+    mode: 0644
+    owner: nico
+    src: config.fish
+- name: Install Nico's tmux config
+  copy:
+    dest: /home/nico/.tmux.conf
+    group: nico
+    mode: 0644
+    owner: nico
+    src: .tmux.conf
+- name: Install Nico's bash_profile config
+  copy:
+    dest: /home/nico/.bash_profile
+    group: nico
+    mode: 0644
+    owner: nico
+    src: .bash_profile

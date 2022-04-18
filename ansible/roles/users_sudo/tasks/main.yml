@@ -1,0 +1,99 @@
+---
+- name: Install sudo
+  pacman: name=sudo state=present
+  # https://github.com/ansible/ansible/issues/11024
+- name: Remove all users from wheel group
+  command: groupmems -g wheel --purge
+  register: groupmems
+  changed_when: "groupmems.rc == 0"
+- name: Add admins & set their group
+  user:
+    name: "{{ item.name }}"
+    state: present
+    groups: "{{ item.groups }}"
+  loop:
+    - { name: "ansible", groups: "wheel" }
+    - { name: "librewish", groups: "wheel" }
+    - { name: "nico", groups: "wheel" }
+    - { name: "tne", groups: "wheel" }
+- name: Add regular users
+  user:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - naman
+    - sgs
+- name: Add Chaotic-AUR maintainers
+  user:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - alexjp
+    - naman
+    - pedrohlc
+    - sgs
+    - technetium
+    - ufscar_hpc
+  when: (chaotic_cluster | default(false) == true) or (chaotic_primary | default(false) == true)
+- name: Add users to chaotic_op group
+  user:
+    append: yes
+    groups: "{{ item.groups }}"
+    name: "{{ item.name }}"
+  loop:
+    - { name: "alexjp", groups: "chaotic_op" }
+    - { name: "librewish", groups: "chaotic_op" }
+    - { name: "naman", groups: "chaotic_op" }
+    - { name: "nico", groups: "chaotic_op" }
+    - { name: "pedrohlc", groups: "chaotic_op,wheel" }
+    - { name: "technetium", groups: "chaotic_op" }
+    - { name: "tne", groups: "chaotic_op" }
+    - { name: "ufscar_hpc", groups: "chaotic_op" }
+  when: (chaotic_cluster | default(false) == true) or (chaotic_primary | default(false) == true)
+- name: Allow wheel group to use passwordless sudo
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: '^%wheel ALL=\(ALL\) ALL'
+    insertafter: '^# %wheel ALL=\(ALL\) ALL'
+    line: "%wheel ALL=(ALL) NOPASSWD: ALL"
+    validate: "visudo -cf %s"
+    mode: 0440
+    owner: root
+    group: root
+- name: Secure path to protect against attacks
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: '^Defaults secure_path="/usr/local/sbin:/usr/local/bin:/usr/bin"'
+    insertafter: '^# Defaults secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"'
+    line: 'Defaults secure_path="/usr/local/sbin:/usr/local/bin:/usr/bin"'
+    validate: "visudo -cf %s"
+    mode: 0440
+    owner: root
+    group: root
+- name: Add admins authorized_keys
+  authorized_key:
+    user: "{{ item.name }}"
+    state: present
+    key: "{{ item.key }}"
+  loop:
+    - { name: "nico", key: "https://github.com/dr460nf1r3.keys" }
+    - { name: "tne", key: "https://github.com/JustTNE.keys" }
+- name: Add regular users authorized_keys
+  authorized_key:
+    user: "{{ item.name }}"
+    state: present
+    key: "{{ item.key }}"
+  loop:
+    - { name: "naman", key: "https://github.com/namanlp.keys" }
+    - { name: "sgs", key: "https://github.com/sgse.keys" }
+- name: Add Chaotic-AUR maintainers authorized_keys
+  authorized_key:
+    user: "{{ item.name }}"
+    state: present
+    key: "{{ item.key }}"
+  loop:
+    - { name: "technetium", key: "https://github.com/technetium1.keys" }
+    - { name: "pedrohlc", key: "https://github.com/pedrohlc.keys" }
+  when: (chaotic_cluster | default(false) == true) or (chaotic_primary | default(false) == true)

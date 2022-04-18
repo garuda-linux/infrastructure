@@ -1,0 +1,13 @@
+---
+actual_hostname: esxi-ansible
+ansible_host: 65.108.140.36
+ansible_port: 225
+borg_dir: /var/cache/garuda-esxi-ansible
+chaotic_cluster: true
+letsencrypt_domain: "test.dr460nf1r3.org"
+
+# Toolbox
+caur_sign_key: BF773B6877808D28
+caur_sign_realname: "Nico Jensch"
+caur_sign_user: root
+caur_sign_user_home: /root

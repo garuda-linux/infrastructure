@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+export CAUR_SIGN_KEY={{ caur_sign_key }}
+export CAUR_SIGN_USER={{ caur_sign_user }}
+export CAUR_PACKAGER="{{ caur_packager }}"
+export CAUR_TYPE={{ caur_type }}
+export CAUR_URL={{ caur_url }}
+
+export CAUR_CLUSTER_NAME={{ caur_cluster_name }}
+export CAUR_DEPLOY_LABEL="{{ caur_deploy_label }}"
+export CAUR_TELEGRAM_TAG="{{ caur_telegram_tag }}"
+
+export CAUR_ROUTINES={{ caur_routines }}
+
+export REPOCTL_CONFIG={{ repoctl_config }}
+export CAUR_REPOCTL_DB_URL={{ caur_repoctl_db_url }}
+export CAUR_REPOCTL_DB_FILE={{ caur_repoctl_db_file }}
+
+# Additional setup
+renice -n 19 $$
+export TERM=screen

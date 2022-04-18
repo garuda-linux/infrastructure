@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+# Define output file
+motd="/etc/motd"
+
+# Collect information
+HOSTNAME=$(uname -n)
+KERNEL=$(uname -r)
+CPU=$(awk -F '[ :][ :]+' '/^model name/ { print $2; exit; }' /proc/cpuinfo)
+ARCH=$(uname -m)
+PACMAN=$(checkupdates | wc -l)
+MEMORY1=$(free -t -m | grep "Mem" | awk '{print $6" MB";}')
+MEMORY2=$(free -t -m | grep "Mem" | awk '{print $2" MB";}')
+MEMPERCENT=$(free | awk '/Mem/{printf("%.2f% (Used) "), $3/$2*100}')
+
+# System uptime
+uptime=$(cat /proc/uptime | cut -f1 -d.)
+upDays=$((uptime / 60 / 60 / 24))
+upHours=$((uptime / 60 / 60 % 24))
+upMins=$((uptime / 60 % 60))
+upSecs=$((uptime % 60))
+
+# System load
+LOAD1=$(cat /proc/loadavg | awk {'print $1'})
+LOAD5=$(cat /proc/loadavg | awk {'print $2'})
+LOAD15=$(cat /proc/loadavg | awk {'print $3'})
+
+# Color variables
+W="\033[0m"
+B="\033[01;36m"
+R="\033[01;31m"
+G="\033[01;32m"
+N="\033[0m"
+
+echo -e "$G---------------------------------------------------------------" >$motd
+echo -e "$W    Hey there! You are logged into $B$A$HOSTNAME$W! 🦅         " >>$motd
+echo -e "$G---------------------------------------------------------------" >>$motd
+echo -e "$B       KERNEL $G:$W $KERNEL $ARCH                              " >>$motd
+echo -e "$B          CPU $G:$W $CPU                                       " >>$motd
+echo -e "$B       MEMORY $G:$W $MEMORY1 / $MEMORY2 - $MEMPERCENT          " >>$motd
+echo -e "$G---------------------------------------------------------------" >>$motd
+echo -e "$B     LOAD AVG $G:$W $LOAD1, $LOAD5, $LOAD15		              " >>$motd
+echo -e "$B       UPTIME $G:$W $upDays days $upHours hours $upMins minutes $upSecs seconds " >>$motd
+echo -e "$B       PACMAN $G:$W $PACMAN packages can be updated            " >>$motd
+echo -e "$B        USERS $G:$W $(users | wc -w) user logged in 	          " >>$motd
+echo -e "$G---------------------------------------------------------------" >>$motd
+{% if 'chaotic_aur' in group_names %}
+echo -e "$R    Build instructions: https://github.com/chaotic-aur/notes   " >>$motd
+echo -e "$W      Use the "$B"chaotic"$W" command to build packages.       " >>$motd
+echo -e "$G---------------------------------------------------------------" >>$motd
+{% endif %}
+echo -e "$W               Please behave well and have fun!                " >>$motd
+echo -e "$W       In case of issues or questions contact Nico or TNE.     " >>$motd
+echo -e "$G---------------------------------------------------------------" >>$motd
+echo -e "$N" >>$motd

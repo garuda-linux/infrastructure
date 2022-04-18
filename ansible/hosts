@@ -1,0 +1,32 @@
+[all:vars]
+ansible_connection = ssh
+ansible_user = ansible
+sftp_enabled = true
+
+[garuda]
+backup-dragon
+build
+esxi-ansible
+esxi-cloud
+esxi-repo
+esxi-web
+iso
+web
+
+[mirrors]
+#ch-mirror
+#sg-mirror
+
+[borg_clients]
+esxi-ansible
+esxi-cloud
+esxi-web
+web
+
+[chaotic_aur]
+build
+esxi-ansible
+esxi-repo
+
+[misc]
+garuda-forum

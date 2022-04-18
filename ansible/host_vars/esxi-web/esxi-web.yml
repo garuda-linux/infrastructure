@@ -1,0 +1,59 @@
+---
+actual_hostname: esxi-web
+ansible_host: 65.108.140.36
+ansible_port: 222
+borg_dir: /var/cache/garuda-esxi-web
+dl_git: true
+docker_compose: true
+goaccess: true
+letsencrypt_domain: "*.garudalinux.org,garudalinux.org"
+
+# Syncthing
+pgid: 1000
+puid: 1000
+tz: Europe/Berlin
+
+# Datadog
+dd_logs_config_container_collect_all: true
+dd_logs_enabled: true
+dd_process_agent_enabled: true
+
+# Diun
+diun_providers_docker: true
+diun_watch_schedule: "@hourly"
+diun_watch_workers: 20
+log_json: false
+log_level: info
+
+# Firefox Syncserver
+ffsync_port: 5000
+syncserver_batch_upload_enabled: true
+syncserver_force_wsgi_environ: false
+syncserver_public_url: https://ffsync.garudalinux.org
+syncserver_sqluri: sqlite:////data/syncserver.db
+
+# Searxng
+letsencrypt_email: team@garudalinux.org
+searxng_command: -f
+searxng_hostname: "Garuda Searxng"
+
+# Searxng proxy
+base_url: https://${searxng_hostname:-localhost}/
+morty_url: https://${searxng_hostname:-localhost}/morty/
+
+# Bitwarden
+domain: https://bitwarden.garudalinux.org
+signups_allowed: true
+smtp_from: noreply@garudalinux.org
+websocket_enabled: true
+
+# Whoogle
+whoogle_autocomplete: 1
+whoogle_config_alts: 1
+whoogle_config_language: lang_en
+whoogle_config_new_tab: 1
+whoogle_config_search_language: lang_en
+whoogle_config_theme: dark
+whoogle_config_url: https://search.garudalinux.org
+whoogle_config_view_image: 1
+whoogle_results_per_page: 15

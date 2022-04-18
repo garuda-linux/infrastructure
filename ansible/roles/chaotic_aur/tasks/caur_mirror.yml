@@ -1,0 +1,67 @@
+- name: Install Docker and docker-compose for Syncthing
+  pacman:
+    name:
+      - docker
+      - docker-compose
+      - python-docker
+- name: Start and enable Docker for Syncthing
+  systemd:
+    name: docker
+    state: started
+    enabled: yes
+- name: Copying Docker configuration
+  synchronize:
+    src: syncthing/
+    dest: /var/cache/chaotic-aur/
+    copy_links: true
+- name: Ensure Syncthing directory exists
+  file:
+    group: root
+    mode: 0755
+    owner: root
+    path: /var/cache/chaotic-aur/syncthing/
+    state: directory
+- name: Copy Syncthing configuration
+  copy:
+    src: syncthing-config.xml
+    dest: /var/cache/chaotic-aur/synthing/syncthing-config.xml
+- name: Setting Syncthing hostname
+  copy:
+    content: "DOMAIN_NAME={{ letsencrypt_domain }}"
+    dest: /var/cache/chaotic-aur/.env
+- name: Set the right permissions for Syncthing
+  file:
+    group: 1000
+    owner: 1000
+    path: "{{ caur_repo_folder }}"
+- name: Docker compose up
+  shell: docker-compose up -d --force-recreate
+  args:
+    chdir: /var/cache/chaotic-aur/
+- name: Check if Letsencrypt is set up
+  stat:
+    path: "{{ letsencrypt_data }}/etc/renewal/{{ certname | default(letsencrypt_domain) }}.conf"
+  register: stat_result
+  when: letsencrypt_domain is defined
+- name: Install DNS token
+  copy:
+    decrypt: yes
+    dest: /root/.cloudflare
+    group: root
+    mode: 0600
+    owner: root
+    src: .cloudflare
+  when: letsencrypt_domain is defined
+- name: Set up Letsencrypt
+  docker_container:
+    image: certbot/dns-cloudflare:latest
+    name: letsencrypt
+    auto_remove: true
+    recreate: yes
+    container_default_behavior: no_defaults
+    volumes:
+      - "{{ letsencrypt_data }}/etc:/etc/letsencrypt"
+      - "{{ letsencrypt_data }}/var:/var/lib/letsencrypt"
+      - "/root/.cloudflare:/root/.cloudflare"
+    command: 'certonly --preferred-challenges dns-01 --non-interactive --agree-tos -m "team@garudalinux.org" --dns-cloudflare --dns-cloudflare-credentials /root/.cloudflare -d "{{ letsencrypt_domain }}" --cert-name "{{ certname | default(letsencrypt_domain) }}"'
+  when: letsencrypt_domain is defined and not stat_result.stat.exists

@@ -1,0 +1,43 @@
+---
+- name: Install borg
+  pacman:
+    name: borg
+    state: present
+- name: Install backup script
+  template:
+    dest: /usr/local/bin/borg-backup.sh
+    group: root
+    mode: 0644
+    owner: root
+    src: backup.sh.j2
+- name: Make backup script executable
+  file:
+    dest: /usr/local/bin/borg-backup.sh
+    mode: a+x
+- name: Install repository key
+  copy:
+    decrypt: yes
+    dest: /root/.borg_key
+    group: root
+    mode: 0644
+    owner: root
+    src: repo-key
+- name: Install systemd units for borg
+  copy:
+    dest: /etc/systemd/system/{{ item }}
+    group: root
+    mode: 0644
+    owner: root
+    src: "{{ item }}"
+  loop:
+    - borg-backup.service
+    - borg-backup.timer
+  notify: systemd daemon-reload
+- name: Enable borg-backup.timer
+  systemd:
+    enabled: yes
+    name: borg-backup.timer
+    state: started
+- name: Initiate borg backup as finishing operation
+  shell: systemctl start borg-backup &
+  ignore_errors: True

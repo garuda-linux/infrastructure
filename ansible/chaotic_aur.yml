@@ -1,0 +1,7 @@
+---
+- hosts: chaotic_aur
+  gather_facts: no
+  become: true
+  tasks:
+    - import_role:
+        name: chaotic_aur

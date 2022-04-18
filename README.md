@@ -1,92 +1,74 @@
-# Infrastructure
+# Garuda Linux server configurations
 
-Holds Ansible and docker-compose configurations used by our infrastructure
+Hello and welcome to the repo managing our infrastructure. Lets have a look at how it all works:
 
-## Getting started
+- Ansible is used to have reproducable environments and sets up the base system for Docker
+- Docker & docker-compose is used to setup the applications and webservices
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+## This repo
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+- GitLab CI is setup and ready to be used, it currently responds to two keywords:
+  - Changes can be automatically tested by supplying `dry-run` together with the name of the playbook to run, eg `Somechange, dry-run full_run.yml`
+  - Deploying is also possible by supplying `deploy` together with the name of the playbook to run, eg `Somechange, deploy full_run.yml`
 
-## Add your files
+## Ansible
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+- We have different roles for all parts of the infrastructure
+- Environment variables are contained in the `host_vars` folders, split regular and encrypted files in case of sensible data
+- Supplying the `ansible-vault` password is done in `ansible/.vault_pass` - this file needs to exist in order to run playbooks
+- For a complete server setup, the `full-run.yml` playbook should be used
+- Updating all systems & rebooting them can be done by running the `system-update.yml` and `reboot.yml` playbooks
 
-```
-cd existing_repo
-git remote add origin https://gitlab.com/garuda-linux/infrastructure.git
-git branch -M main
-git push -uf origin main
-```
+### Common
 
-## Integrate with your tools
+- Sets up everything needed for on all servers, eg. Pacman configurations, `motd` or `systemd-oomd`
 
-- [ ] [Set up project integrations](https://gitlab.com/garuda-linux/infrastructure/-/settings/integrations)
+### Hardening
 
-## Collaborate with your team
+- Server hardening is done using the [Devsec Hardening framework](https://github.com/dev-sec/ansible-collection-hardening)
+- We use the `os_hardening` and `ssh_hardening` playbooks, other services don't benefit from this as we run all the stuff inside of containers
+- Individual settings can be put into `host_vars` in case of specific needs
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Automatically merge when pipeline succeeds](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+### Borg Clients
 
-## Test and Deploy
+- To add automatic backups to a server, add it `[borg-clients]` in the `hosts` file and specify the `borg_dir` variable, eg. `borg_dir="/var/cache/garuda-web"`
+- The SSH key of the root user then needs to be added to the borg servers `authorized_keys`
+- Do a test run in order to add the borg server to `known_hosts`
 
-Use the built-in continuous integration in GitLab.
+### Chaotic-AUR
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+- The Chaotic-AUR role is supposed to bootstrap a basic Chaotic-AUR build environment
+- It also creates a GPG key if it doesn't exist and fetches it to `ansible/buffer`
+- The content of `chaotic.conf` can be defined in `host_vars`, these also control whether a cluster node or primary node is being deployed
+- If the primary node is managed by Ansible (`caur_primary = `true`), SSH keys are automatically added to its authorized_keys
+- Make sure to add the required `host_vars`, examples can be found in `ansible/roles/chaotic_aur/defaults/main.yml`
+- If `caur_mirror` is set to `true`, a local Syncthing mirror and web server will be deployed as well
 
-***
+### Users_sudo
 
-# Editing this README
+- In this role we specify our users and their permissions
+- To add a user simply add it to the array of users - groups can also be passed here
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!).  Thank you to [makeareadme.com](https://www.makeareadme.com/) for this template.
+### Letsencrypt
 
-## Suggestions for a good README
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+- Used to detect Letsencrypt instances based on the `letsencrypt` variable
+- Can also update certificates if needed
+- Needs `letsencrypt_domain` and `letsencrypt_data` specified as `host_vars`
 
-## Name
-Choose a self-explaining name for your project.
+### Systemd
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+- Contains various Systemd units needed on certain systems
+- Can be controlled by specifying environment variables in `host_vars`
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+## Docker
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+- The uppercase directories in the main directory represent our individual servers
+- The `docker-compose.yml.j2` files (`ansible/roles/docker_compose/templates`) in conjunction with static configuration files can be altered and pushed to the servers using the `garuda.yml` playbook
+- Environment variables are passed via `host_vars`, replace them with {{ ansible_env_vars }} inside of the `docker-compose.yml.j2` files
+- Put sensible environment variables inside of the `host_vars` folder, here we have `*_vault.yml` files which are encrypted
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+## Linting
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+- We use `prettify` In order to achieve a consistent code style and formatting
+- Install yarn und run `yarn install` inside the project directory to set up the its dependencies
+- `yarn run lint` will run the linter and show the results, `yarn run prettify` will fix the found issues

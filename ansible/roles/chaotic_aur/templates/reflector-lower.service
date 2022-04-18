@@ -1,0 +1,40 @@
+[Unit]
+After=network-online.target nss-lookup.target
+Description=Refresh Pacman mirrorlist with Reflector.
+Documentation=https://wiki.archlinux.org/index.php/Reflector
+Wants=network-online.target
+
+[Service]
+CacheDirectory=reflector
+CapabilityBoundingSet=
+Environment=XDG_CACHE_HOME=/var/cache/reflector
+ExecStart=/usr/bin/reflector @/etc/reflector.conf
+LockPersonality=true
+MemoryDenyWriteExecute=true
+NoNewPrivileges=true
+PrivateDevices=true
+PrivateTmp=true
+PrivateUsers=true
+ProtectClock=true
+ProtectControlGroups=true
+ProtectHome=true
+ProtectHostname=true
+ProtectKernelLogs=true
+ProtectKernelModules=true
+ProtectKernelTunables=true
+ProtectSystem=strict
+ReadOnlyPaths=/etc/reflector.conf
+ReadWritePaths=/var/cache/chaotic/lower/latest/etc/pacman.d/mirrorlist
+RemoveIPC=true
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+RestrictNamespaces=true
+RestrictRealtime=true
+RestrictSUIDSGID=true
+SystemCallArchitectures=native
+SystemCallFilter=@system-service
+SystemCallFilter=~@resources @privileged
+Type=oneshot
+UMask=177
+
+[Install]
+WantedBy=multi-user.target

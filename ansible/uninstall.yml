@@ -1,0 +1,27 @@
+---
+- hosts: all
+  gather_facts: no
+  become: true
+  tasks:
+    - name: Remove everything?
+      pause:
+        prompt: This will delete EVERYTHING managed by docker-compose (including databases!) from all VMs by default!!! Are you sure?? Press return to continue. Press Ctrl+c and then "a" to abort
+    - name: Docker compose down
+      community.docker.docker_compose:
+        project_src: /var/cache/garuda-{{ inventory_hostname | lower }}
+        remove_orphans: true
+        state: absent
+      ignore_errors: yes
+    - name: Delete docker-compose directory
+      file:
+        state: absent
+        path: /var/cache/garuda-{{ inventory_hostname | lower }}
+    - name: Prune everything (including non-dangling images)
+      community.docker.docker_prune:
+        containers: yes
+        images: yes
+        images_filters:
+          dangling: false
+        networks: yes
+        volumes: yes
+        builder_cache: yes

@@ -1,0 +1,155 @@
+- name: Check if Chaotic-AUR is installed already
+  stat:
+    path: /etc/pacman.d/chaotic-mirrorlist
+  register: caur_exists
+- name: Retrieve Chaotic-AUR master key and sign it
+  shell: pacman-key --recv-key FBA220DFC880C036 --keyserver keyserver.ubuntu.com && pacman-key --lsign-key FBA220DFC880C036
+  when: caur_exists.stat.exists | default(true) == false
+- name: Install Chaotic-AUR keyring and mirrorlist
+  pacman:
+    name:
+      - https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst
+      - https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst
+  when: caur_exists.stat.exists | default(true) == false
+- name: Install pacman config
+  copy:
+    dest: /etc/pacman.conf
+    group: root
+    mode: 0644
+    owner: root
+    src: pacman.conf
+- name: Configure pacman mirror
+  copy:
+    dest: /etc/pacman.d/mirrorlist
+    group: root
+    mode: 0644
+    owner: root
+    src: mirrorlist
+- name: Update package cache
+  pacman:
+    update_cache: yes
+- name: Install core packages
+  pacman:
+    name:
+      - arch-install-scripts
+      - base-devel
+      - fuse-overlayfs
+      - git
+      - python-telegram-send
+      - reflector
+      - repoctl
+    state: present
+- name: Check if root SSH key is present already
+  stat:
+    path: /root/.ssh/id_rsa
+  register: ssh_exists
+- name: Generate root SSH key
+  shell: ssh-keygen -t rsa -b 4096 -f /root/.ssh/id_rsa -N ''
+  register: ssh_generated
+  when: ssh_exists.stat.exists | default(true) == false
+- name: Fetch the new SSH key into the buffer
+  fetch:
+    dest: buffer/
+    flat: yes
+    src: /root/.ssh/id_rsa.pub
+  when: (ssh_exists.stat.exists | default(true) == false) and (chaotic_cluster | default(false) == true)
+- name: Let the primary node know a new key is available
+  stat:
+    path: buffer/id_rsa.pub
+  register: ssh_pubkey
+  when: (ssh_exists.stat.exists | default(true) == false) and caur_primary | default(false) == true
+- name: Make the SSH key available to the primary node
+  copy:
+    dest: /root/.ssh/id_rsa.pub.new
+    src: buffer/id_rsa.pub
+  when: (ssh_pubkey.stat.exists | default(false) == true) and (caur_primary | default(false) == true)
+- name: Add the generated SSH key to primary's authorized_keys
+  shell: cat /root/.ssh/id_rsa.pub.new >> /root/.ssh/authorized_keys && rm /root/.ssh/id_rsa.pub.new
+  when: (ssh_pubkey.stat.exists | default(true) == false) and (caur_primary | default(false) == true)
+- import_tasks: generate_gpg.yml
+- name: Clone the Chaotic toolbox
+  git:
+    depth: 1
+    dest: /var/cache/garuda-{{ inventory_hostname }}/toolbox
+    force: yes
+    repo: https://github.com/chaotic-aur/toolbox.git
+    single_branch: yes
+- name: Create chaotic_op group
+  group:
+    name: chaotic_op
+    state: present
+- name: Make & Install toolbox files
+  shell: make build && make install && make install-services
+  args:
+    chdir: /var/cache/garuda-{{ inventory_hostname }}/toolbox
+- name: Install Chaotic-AUR toolbox configuration
+  template:
+    dest: /etc/chaotic.conf
+    group: root
+    mode: 0644
+    owner: root
+    src: chaotic.conf.j2
+- name: Create a directory for the repoctl configuration
+  file:
+    group: root
+    mode: 0755
+    owner: root
+    path: /etc/chaotic/
+    state: directory
+  when: chaotic_cluster | default(false) == true
+- name: Install repoctl configuration for cluster nodes
+  copy:
+    dest: /etc/chaotic/repoctl.conf
+    group: root
+    mode: 0644
+    owner: root
+    src: repoctl_cluster.conf
+  when: chaotic_cluster | default(false) == true
+- name: Install repoctl configuration
+  copy:
+    decrypt: yes
+    dest: /root/.config/{{ item }}
+    group: root
+    mode: 0644
+    owner: root
+    src: "{{ item }}"
+  loop:
+    - telegram-send-group.conf
+    - telegram-send-log.conf
+- name: Enable Chaotic-AUR systemd timers
+  service:
+    name: "{{ item }}"
+    state: enabled
+  loop:
+    - chaotic-afternoon.timer
+    - chaotic-hourly.timer
+    - chaotic-midnight.timer
+    - chaotic-morning.timer
+  when: caur_enable_timer | default(false) == true
+- import_tasks: caur_mirror.yml
+  when: caur_mirror | default(false) == true
+- import_tasks: caur_primary.yml
+  when: caur_primary | default(false) == true
+- name: Install Reflector configuration
+  copy:
+    dest: /etc/reflector.conf
+    group: root
+    mode: 0644
+    owner: root
+    src: reflector.conf
+- name: Install custom Reflector service & timers
+  copy:
+    dest: /etc/systemd/system/{{ item }}
+    group: root
+    mode: 0644
+    owner: root
+    src: "{{ item }}"
+  loop:
+    - reflector-lower.service
+    - reflector-lower.timer
+  notify: systemd daemon-reload
+- name: Enable Reflector timer
+  systemd:
+    name: reflector-lower.timer
+    state: started
+    enabled: yes

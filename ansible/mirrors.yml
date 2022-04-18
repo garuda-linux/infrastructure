@@ -1,0 +1,40 @@
+---
+- hosts: mirrors
+  gather_facts: no
+  become: true
+  tasks:
+    - name: Copy authorized_keys
+      copy:
+        src: ./authorized_keys
+        dest: /home/ansible/.ssh/authorized_keys
+        owner: ansible
+        group: ansible
+        mode: "0600"
+    - name: Copying mirror config
+      synchronize:
+        src: ../CHAOTIC-MIRROR/
+        dest: /var/cache/chaotic-mirror
+        copy_links: true
+    - import_role:
+        name: letsencrypt
+      vars:
+        letsencrypt_data: /var/cache/chaotic-mirror/data/letsencrypt
+        certname: chaotic
+    - name: Setting hostname
+      copy:
+        content: "DOMAIN_NAME={{ letsencrypt_domain }}"
+        dest: /var/cache/chaotic-mirror/.env
+    - name: Create syncthing directory
+      file:
+        path: /var/cache/chaotic-mirror/data/syncthing/
+        state: directory
+    - name: Setting syncthing default config
+      copy:
+        dest: /var/cache/chaotic-mirror/data/syncthing/config.xml
+        force: no
+        remote_src: yes
+        src: /var/cache/chaotic-mirror/preset/syncthing-config.xml
+    - name: Docker compose up
+      shell: docker-compose up -d --force-recreate
+      args:
+        chdir: /var/cache/chaotic-mirror/

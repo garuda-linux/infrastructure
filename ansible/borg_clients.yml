@@ -1,0 +1,7 @@
+---
+- hosts: borg_clients
+  gather_facts: no
+  become: true
+  tasks:
+    - import_role:
+        name: borg_clients

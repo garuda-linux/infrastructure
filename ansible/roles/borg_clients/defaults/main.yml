@@ -1,0 +1,2 @@
+---
+borg_dir: /var/cache/{{ inventory_hostname }}

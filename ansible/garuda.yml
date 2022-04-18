@@ -1,0 +1,25 @@
+---
+- hosts: garuda
+  gather_facts: no
+  become: true
+  tasks:
+    - name: Copy authorized_keys
+      copy:
+        src: ./authorized_keys
+        dest: /home/ansible/.ssh/authorized_keys
+        owner: ansible
+        group: ansible
+        mode: "0600"
+    - import_role:
+        name: users_sudo
+    - import_role:
+        name: docker_compose
+    - import_role:
+        name: systemd
+    - import_role:
+        name: update_repos
+    - import_role:
+        name: letsencrypt
+      vars:
+        - letsencrypt_data: /var/cache/garuda-{{ inventory_hostname | lower }}/letsencrypt
+        - certname: garuda-{{ inventory_hostname | lower }}

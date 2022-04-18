@@ -1,0 +1,17 @@
+actual_hostname: esxi-cloud
+ansible_host: 65.108.140.36
+ansible_port: 224
+borg_dir: /var/cache/garuda-esxi-cloud
+docker_compose: true
+
+# Nextcloud
+puid: 1000
+pgid: 1000
+tz: Europe/Berlin
+
+# Diun
+diun_providers_docker: true
+diun_watch_schedule: "@hourly"
+diun_watch_workers: 20
+log_json: false
+log_level: info

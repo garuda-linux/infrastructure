@@ -1,0 +1,4 @@
+---
+actual_hostname: garuda-forum
+ansible_host: 157.230.4.68
+discourse: true

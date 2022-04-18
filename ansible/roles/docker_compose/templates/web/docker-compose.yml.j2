@@ -1,0 +1,127 @@
+version: "3.8"
+services:
+  # Nginx proxy manager
+  app:
+    image: jc21/nginx-proxy-manager:latest
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "./config.json:/app/config/production.json"
+      - "./npm/data:/data"
+      - "./npm/letsencrypt:/etc/letsencrypt"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  db:
+    image: jc21/mariadb-aria:latest-innodb
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: {{ npm_mysql_root_password }}
+      MYSQL_DATABASE: {{ npm_mysql_database }}
+      MYSQL_USER: {{ npm_mysql_user }}
+      MYSQL_PASSWORD: {{ npm_mysql_password }}
+    volumes:
+      - "./npm/data/mysql:/var/lib/mysql"
+
+  # Garuda wiki
+  wikijs_app:
+    image: requarks/wiki:latest
+    container_name: wikijs_app
+    depends_on:
+      - wikijs_db
+    volumes:
+      - "./wikijs/assets:/wiki/assets/favicons"
+    environment:
+      DB_TYPE: {{ db_type }}
+      DB_HOST: {{ db_host }}
+      DB_PORT: {{ db_port }}
+      DB_USER: {{ db_user }}
+      DB_PASS: {{ db_pass }}
+      DB_NAME: {{ db_name }}
+    restart: always
+
+  # Privacy friendly analytics
+  matomo_db:
+    image: mariadb:latest
+    container_name: matomo_db
+    command: --max-allowed-packet=64MB
+    restart: always
+    volumes:
+      - "./matomo/db:/var/lib/mysql"
+    environment:
+      MYSQL_ROOT_PASSWORD: {{ mysql_root_password }}
+
+  matomo_app:
+    image: matomo:latest
+    container_name: matomo_app
+    restart: always
+    volumes:
+      - "./matomo/config:/var/www/html/config"
+      - "./matomo/logs:/var/www/html/logs"
+      - "./matomo/www:/var/www/html"
+    environment:
+      MYSQL_PASSWORD: {{ mysql_password }}
+      MYSQL_DATABASE: {{ mysql_database }}
+      MYSQL_USER: {{ mysql_user }}
+      MATOMO_DATABASE_ADAPTER: {{ mysql_database_adapter }}
+      MATOMO_DATABASE_TABLES_PREFIX: {{ matomo_database_tables_prefix }}
+      MATOMO_DATABASE_USERNAME: {{ matomo_database_username }}
+      MATOMO_DATABASE_PASSWORD: {{ matomo_database_password }}
+      MATOMO_DATABASE_DBNAME: {{ matomo_database_dbname }}
+
+  # Matrix homeserver
+  matrix:
+    image: matrixdotorg/synapse:latest
+    container_name: matrix
+    restart: always
+    volumes:
+      - "./matrix/matrix:/data"
+      - "./matrix/mautrix-telegram/registration.yaml:/mautrix-registration.yaml"
+      - "./matrix/matrix-irc/appservice-registration-irc.yaml:/irc-registration.yaml"
+      - "./matrix/matrix-discord/discord-registration.yaml:/discord-registration.yaml"
+
+  matrix_web:
+    image: vectorim/element-web
+    container_name: element_web
+    volumes:
+      - "./matrix/element_web/config.json:/app/config.json"
+    restart: always
+
+  matrix_admin:
+    image: awesometechnologies/synapse-admin:latest
+    container_name: matrix_admin
+    restart: unless-stopped
+
+  matterbridge:
+    image: 42wim/matterbridge:stable
+    volumes:
+      - "./matterbridge.toml:/etc/matterbridge/matterbridge.toml:ro"
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:14-alpine
+    container_name: postgres
+    environment:
+      POSTGRES_PASSWORD: {{ postgres_password }}
+      POSTGRES_USER: {{ postgres_user }}
+    volumes:
+      - "./postgres/:/var/lib/postgresql/data"
+    restart: always
+
+  # Centralized logging
+  datadoghq:
+    image: datadog/agent:latest
+    container_name: dd-agent
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "/proc/:/host/proc/:ro"
+      - "/sys/fs/cgroup/:/host/sys/fs/cgroup:ro"
+    environment:
+      DD_API_KEY: {{ dd_api_key }}
+      DD_SITE: {{ dd_site }} 
+      DD_LOGS_ENABLED: {{ dd_logs_enabled }}
+      DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL: {{ dd_logs_config_container_collect_all }}
+      DD_PROCESS_AGENT_ENABLED: {{ dd_process_agent_enabled }}  
+    restart: always

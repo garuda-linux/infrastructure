@@ -1,0 +1,7 @@
+[Unit]
+Description=Update motd
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/update-motd.sh
+User=root

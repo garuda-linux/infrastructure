@@ -1,0 +1,10 @@
+---
+actual_hostname: garuda-web
+ansible_host: 216.158.66.107
+borg_dir: /var/cache/garuda-web
+docker_compose: true
+
+# Datadog
+dd_logs_config_container_collect_all: true
+dd_logs_enabled: true
+dd_process_agent_enabled: true

@@ -1,0 +1,31 @@
+- name: Install repoctl configuration for primary node
+  template:
+    dest: /usr/local/etc/chaotic-repoctl.toml
+    group: root
+    mode: 0644
+    owner: root
+    src: repoctl_primary.toml.j2
+- name: Install rsyncd configuration on primary node
+  copy:
+    dest: /etc/rsyncd.conf
+    group: root
+    mode: 0644
+    owner: root
+    src: rsyncd.conf
+- name: Start and enable rsyncd on primary node
+  systemd:
+    name: rsyncd
+    state: started
+    enabled: yes
+- name: Ensure a needed directories exist
+  file:
+    group: root
+    mode: 0775
+    owner: root
+    path: "{{ caur_repo_folder }}/chaotic-aur/{{ item }}"
+    state: directory
+  loop:
+    - "{{ caur_repo_folder }}/chaotic-aur/logs"
+    - "{{ caur_repo_folder }}/chaotic-aur/x86_64"
+#- name: Set correct permissions for the primary's repo folder
+#  shell: cd {{ caur_repo_folder}}/chaotic-aur && chmod g+s x86_64 logs && chown -R :chaotic_op x86_64 logs && chmod 664 x86_64/* logs/*'

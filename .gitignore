@@ -1,0 +1,4 @@
+.vault_pass*
+buffer/
+node_modules/
+yarn.lock

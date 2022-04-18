@@ -1,0 +1,37 @@
+---
+actual_hostname: garuda-build
+ansible_host: 216.158.66.108
+caur_primary: true
+docker_compose: true
+letsencrypt_data: "/var/cache/{{ inventory_hostname }}/letsencrypt"
+letsencrypt_domain: "builds.garudalinux.org,cf-builds.garudalinux.org"
+
+# Syncthing
+puid: 1000
+pgid: 1000
+tz: Europe/Berlin
+
+# Datadog
+dd_logs_enabled: true
+dd_logs_config_container_collect_all: true
+dd_process_agent_enabled: true
+
+# Toolbox
+caur_cluster_name: garuda-cluster
+caur_deploy_label: "Temeraire 🐉"
+caur_overlay_type: kernel
+caur_packager: "Nico Jensch <dr460nf1r3@chaotic.cx>"
+caur_repoctl_db_file: /srv/http/repos/chaotic-aur/x86_64/chaotic-aur.db.tar.zst
+caur_repoctl_db_url: ""
+caur_routines: /var/cache/chaotic/routines
+caur_sign_key: BF773B6877808D28
+caur_sign_realname: "Nico Jensch"
+caur_sign_user: root
+caur_sign_user_root: /root
+caur_telegram_tag: "@dr460nf1r3"
+caur_type: primary
+caur_url: https://builds.garudalinux.org/repos/chaotic-aur/x86_64
+repoctl_config: /usr/local/etc/chaotic-repoctl.toml
+
+# Devsec default override, needed for toolbox
+ssh_permit_root_login: yes

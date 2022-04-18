@@ -1,0 +1,3 @@
+ansible_host: 52.163.124.30
+docker_compose: true
+letsencrypt_domain: "sg-mirror.garudalinux.org"

@@ -1,0 +1,8 @@
+---
+- hosts: garuda,misc
+  gather_facts: no
+  become: true
+  tasks:
+    - import_role:
+        name: docker_compose
+      when: docker_compose | default(false) == true
