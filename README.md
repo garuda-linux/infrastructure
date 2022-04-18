@@ -37,7 +37,7 @@ Hello and welcome to the repo managing our infrastructure. Lets have a look at h
 
 ### Chaotic-AUR
 
-- The Chaotic-AUR role is supposed to bootstrap a basic Chaotic-AUR build environment
+- The Chaotic-AUR role is supposed to bootstrap a basic Chaotic-AUR build environment. It is maintained at the Chaotic-AUR GitHub org and added as submodule, therefore don't forget to initialize it!
 - It also creates a GPG key if it doesn't exist and fetches it to `ansible/buffer`
 - The content of `chaotic.conf` can be defined in `host_vars`, these also control whether a cluster node or primary node is being deployed
 - If the primary node is managed by Ansible (`caur_primary = `true`), SSH keys are automatically added to its authorized_keys

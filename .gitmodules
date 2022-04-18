@@ -1,3 +1,6 @@
 [submodule "ansible/roles/docker_compose/files/iso/buildiso"]
-	path = ansible/roles/docker_compose/files/iso/buildiso
-	url = https://gitlab.com/garuda-linux/tools/buildiso-docker
+path = ansible/roles/docker_compose/files/iso/buildiso
+url = https://gitlab.com/garuda-linux/tools/buildiso-docker
+[submodule "ansible/caur"]
+path = ansible/caur
+url = https://github.com/chaotic-aur/chaotic-aur-ansible
