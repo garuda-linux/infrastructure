@@ -2,7 +2,7 @@ version: "3.8"
 services:
   # Webserver - reverse proxying all the other containers
   nginx:
-    image: patrikjuvonen/docker-nginx-http3:latest
+    image: macbre/nginx-http3:latest
     container_name: nginx
     volumes:
       - "./nginx/conf.d:/etc/nginx/conf.d/:ro"
