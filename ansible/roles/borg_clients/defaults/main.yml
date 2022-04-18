@@ -1,2 +1,5 @@
 ---
 borg_dir: /var/cache/{{ inventory_hostname }}
+borg_repo_address: 89.58.13.188
+borg_repo_dir: /backups
+borg_repo_port: 4200

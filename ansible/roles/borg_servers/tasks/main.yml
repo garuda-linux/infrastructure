@@ -1,0 +1,44 @@
+---
+- name: Install Borg
+  pacman:
+    name: borg
+    state: present
+- name: create borg user
+  user:
+    name: borg
+    home: "{{ borg_repo_dir }}"
+- name: Create the borg user group
+  group:
+    name: borg
+    state: present
+- name: Add backup users to the borg group
+  user:
+    append: yes
+    groups: "{{ item.groups }}"
+    name: "{{ item.name }}"
+  loop:
+    - { name: "librewish", groups: "borg" }
+    - { name: "naman", groups: "borg" }
+    - { name: "nico", groups: "borg" }
+    - { name: "sgs", groups: "borg" }
+    - { name: "tne", groups: "borg" }
+- name: Create the backup directory with correct permissions
+  file:
+    path: "{{ borg_repo_dir }}/{{ item }}"
+    state: directory
+    mode: 0770
+    owner: borg
+    group: borg
+  with_items: "{{ borg_clients }}"
+- name: Fetch ssh keys from each borg client machine
+  command: cat /root/.ssh/id_rsa.pub
+  register: ssh_keys
+  delegate_to: "{{ item }}"
+  with_items: "{{ borg_clients }}"
+  changed_when: ssh_keys.stdout | length > 0
+- name: Allow certain clients to connect
+  authorized_key:
+    user: borg
+    key: "{{ item.stdout }}"
+    manage_dir: true
+  with_items: "{{ ssh_keys.results }}"

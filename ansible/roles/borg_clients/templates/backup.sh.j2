@@ -1,13 +1,11 @@
 #!/bin/sh
-. /root/.borg_key
-# some helpers and error handling:
+. /root/.borg_secret
+export BORG_REPO=ssh://borg@{{ borg_repo_address }}:{{ borg_repo_port }}//{{ borg_repo_dir }}/{{ inventory_hostname }}
+
 info() { printf "\n%s %s\n\n" "$(date)" "$*" >&2; }
 trap 'echo $( date ) Backup interrupted >&2; exit 2' INT TERM
 
 info "Starting backup"
-
-# Backup the most important directories into an archive named after
-# the machine this script is currently running on:
 
 borg create \
   --verbose \
@@ -24,11 +22,6 @@ backup_exit=$?
 
 info "Pruning repository"
 
-# Use the `prune` subcommand to maintain 7 daily, 4 weekly and 6 monthly
-# archives of THIS machine. The '{hostname}-' prefix is very important to
-# limit prune's operation to this machine's archives and not apply to
-# other machines' archives also:
-
 borg prune \
   --list \
   --prefix '{hostname}-' \
@@ -39,7 +32,6 @@ borg prune \
 
 prune_exit=$?
 
-# use highest exit code as global exit code
 global_exit=$((backup_exit > prune_exit ? backup_exit : prune_exit))
 
 if [ ${global_exit} -eq 0 ]; then

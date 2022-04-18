@@ -17,11 +17,11 @@
 - name: Install repository key
   copy:
     decrypt: yes
-    dest: /root/.borg_key
+    dest: /root/.borg_secret
     group: root
     mode: 0644
     owner: root
-    src: repo-key
+    src: .borg_secret
 - name: Install systemd units for borg
   copy:
     dest: /etc/systemd/system/{{ item }}

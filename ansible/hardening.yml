@@ -1,5 +1,6 @@
 ---
 - hosts:
+    - chaotic_aur
     - garuda
     - misc
   become: yes

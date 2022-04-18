@@ -14,6 +14,13 @@
         name: users_sudo
     - import_role:
         name: docker_compose
+      when: docker_compose | default(false) == true
+    - import_role:
+        name: borg_clients
+      when: "'borg_clients' in group_names"
+    - import_role:
+        name: borg_servers
+      when: "'borg_servers' in group_names"
     - import_role:
         name: systemd
     - import_role:
@@ -23,3 +30,4 @@
       vars:
         - letsencrypt_data: /var/cache/garuda-{{ inventory_hostname | lower }}/letsencrypt
         - certname: garuda-{{ inventory_hostname | lower }}
+      when: letsencrypt_ddomain is defined

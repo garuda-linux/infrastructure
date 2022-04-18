@@ -23,6 +23,9 @@ esxi-cloud
 esxi-web
 web
 
+[borg_servers]
+backup-dragon
+
 [chaotic_aur]
 build
 esxi-ansible

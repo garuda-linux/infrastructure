@@ -9,7 +9,7 @@ Hello and welcome to the repo managing our infrastructure. Lets have a look at h
 
 - GitLab CI is setup and ready to be used, it currently responds to two keywords:
   - Changes can be automatically tested by supplying `dry-run` together with the name of the playbook to run, eg `Somechange, dry-run full_run.yml`
-  - Deploying is also possible by supplying `deploy` together with the name of the playbook to run, eg `Somechange, deploy full_run.yml`
+  - Deploying is also possible by supplying `deploy` together with the name of the playbook to run, eg `Somechange [deploy full_run.yml]`
 
 ## Ansible
 
@@ -40,7 +40,7 @@ Hello and welcome to the repo managing our infrastructure. Lets have a look at h
 - The Chaotic-AUR role is supposed to bootstrap a basic Chaotic-AUR build environment. It is maintained at the Chaotic-AUR GitHub org and added as submodule, therefore don't forget to initialize it!
 - It also creates a GPG key if it doesn't exist and fetches it to `ansible/buffer`
 - The content of `chaotic.conf` can be defined in `host_vars`, these also control whether a cluster node or primary node is being deployed
-- If the primary node is managed by Ansible (`caur_primary = `true`), SSH keys are automatically added to its authorized_keys
+- If the primary node is managed by Ansible (`caur_primary = true`), SSH keys are automatically added to its `authorized_keys`
 - Make sure to add the required `host_vars`, examples can be found in `ansible/roles/chaotic_aur/defaults/main.yml`
 - If `caur_mirror` is set to `true`, a local Syncthing mirror and web server will be deployed as well
 
