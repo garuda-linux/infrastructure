@@ -48,6 +48,7 @@ Hello and welcome to the repo managing our infrastructure. Lets have a look at h
 
 - In this role we specify our users and their permissions
 - To add a user simply add it to the array of users - groups can also be passed here
+- There are three types of users: regular, admins and Chaotic-AUR maintainers - the latter gets added when the host is added to the `[chaotic_aur]` group
 
 ### Letsencrypt
 
