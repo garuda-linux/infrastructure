@@ -1,0 +1,11 @@
+---
+- hosts: borg_clients,borg_servers
+  gather_facts: no
+  become: true
+  tasks:
+    - import_role:
+        name: borg_clients
+      when: "'borg_clients' in group_names"
+    - import_role:
+        name: borg_servers
+      when: "'borg_servers' in group_names"

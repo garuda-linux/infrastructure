@@ -1,36 +1,56 @@
----
 - name: Install Borg
   pacman:
     name: borg
     state: present
-- name: create borg user
-  user:
-    name: borg
-    home: "{{ borg_repo_dir }}"
-- name: Create the borg user group
+- name: Create borg group
   group:
     name: borg
     state: present
-- name: Add backup users to the borg group
+- name: Ensure the repository directory exists
   user:
-    append: yes
-    groups: "{{ item.groups }}"
-    name: "{{ item.name }}"
-  loop:
-    - { name: "librewish", groups: "borg" }
-    - { name: "naman", groups: "borg" }
-    - { name: "nico", groups: "borg" }
-    - { name: "sgs", groups: "borg" }
-    - { name: "tne", groups: "borg" }
+    createhome: yes
+    group: borg
+    home: "{{ borg_repo_dir }}"
+    name: borg
+    shell: /bin/bash
+- name: Set permissions on the repository directory
+  file:
+    group: borg
+    mode: 0700
+    owner: borg
+    path: "{{ borg_repo_dir }}"
+    state: directory
+- name: Create .ssh directory for the borg user
+  file:
+    group: borg
+    mode: 0700
+    owner: borg
+    path: "{{ borg_repo_dir }}/.ssh"
+    state: directory
 - name: Create the backup directory with correct permissions
   file:
     path: "{{ borg_repo_dir }}/{{ item }}"
     state: directory
-    mode: 0770
+    mode: 0700
     owner: borg
     group: borg
   with_items: "{{ borg_clients }}"
-- name: Fetch ssh keys from each borg client machine
+- name: Set permissions for the .ssh files
+  file:
+    group: borg
+    mode: 0600
+    owner: borg
+    path: "{{ borg_repo_dir }}/.ssh/authorized_keys"
+    state: file
+- name: Create backup directories
+  file:
+    group: borg
+    mode: 0700
+    owner: borg
+    path: "{{ borg_repo_dir }}/{{ item }}"
+    state: directory
+  with_items: "{{ borg_clients }}"
+- name: Fetch ssh keys from each Borg client machine
   command: cat /root/.ssh/id_rsa.pub
   register: ssh_keys
   delegate_to: "{{ item }}"
@@ -38,7 +58,8 @@
   changed_when: ssh_keys.stdout | length > 0
 - name: Allow certain clients to connect
   authorized_key:
-    user: borg
     key: "{{ item.stdout }}"
+    key_options: 'command="borg serve --restrict-to-path {{ borg_repo_dir }}/{{ item[''item''] }}",restrict'
     manage_dir: true
+    user: borg
   with_items: "{{ ssh_keys.results }}"
