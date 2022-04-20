@@ -30,6 +30,15 @@ services:
       - "./nextcloud/db:/var/lib/mysql"
     restart: always
 
+  nextcloud_redis:
+    image: redis:latest
+    container_name: nextcloud_redis
+    environment:
+      ALLOW_EMPTY_PASSWORD: {{ allow_empty_password }}
+    restart: always
+    labels:
+      - "diun.enable=true"
+
   # Centralized logging
   datadoghq:
     image: datadog/agent:latest

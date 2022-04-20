@@ -5,6 +5,7 @@ borg_dir: /var/cache/garuda-esxi-cloud
 docker_compose: true
 
 # Nextcloud
+allow_empty_password: yes
 puid: 1000
 pgid: 1000
 tz: Europe/Berlin
