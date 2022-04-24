@@ -18,10 +18,30 @@ scrape_configs:
     static_configs:
       - targets: ["nodeexporter:9100"]
 
-  - job_name: "cadvisor"
+  - job_name: "nodeexporter-esxi-web"
+    scrape_interval: 5s
+    static_configs:
+      - targets: ["192.168.1.20:9100"]
+
+  - job_name: "nodeexporter-esxi-cloud"
+    scrape_interval: 5s
+    static_configs:
+      - targets: ["192.168.1.40:9100"]
+
+  - job_name: "cadvisor-esxi-monitor"
     scrape_interval: 5s
     static_configs:
       - targets: ["cadvisor:8080"]
+
+  - job_name: "cadvisor-esxi-web"
+    scrape_interval: 5s
+    static_configs:
+      - targets: ["192.168.1.20:8080"]
+
+  - job_name: "cadvisor-esxi-cloud"
+    scrape_interval: 5s
+    static_configs:
+      - targets: ["192.168.1.40:8080"]
 
   - job_name: "prometheus"
     scrape_interval: 10s

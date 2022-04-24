@@ -5,6 +5,7 @@
     - misc
   become: yes
   gather_facts: yes
+  ignore_errors: yes
   collections:
     - devsec.hardening
   roles:
