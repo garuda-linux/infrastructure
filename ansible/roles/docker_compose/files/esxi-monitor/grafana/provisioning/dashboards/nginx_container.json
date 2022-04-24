@@ -2,9 +2,7 @@
   "id": null,
   "title": "Nginx",
   "description": "Nginx exporter metrics",
-  "tags": [
-    "nginx"
-  ],
+  "tags": ["nginx"],
   "style": "dark",
   "timezone": "browser",
   "editable": true,
@@ -372,19 +370,9 @@
       "2h",
       "1d"
     ],
-    "time_options": [
-      "5m",
-      "15m",
-      "1h",
-      "6h",
-      "12h",
-      "24h",
-      "2d",
-      "7d",
-      "30d"
-    ]
+    "time_options": ["5m", "15m", "1h", "6h", "12h", "24h", "2d", "7d", "30d"]
   },
-    "templating": {
+  "templating": {
     "list": []
   },
   "annotations": {
