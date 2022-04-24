@@ -9,9 +9,13 @@
     name: docker
     state: started
     enabled: yes
+- name: Create directory for docker-compose stack
+  file:
+    path: /var/cache/garuda-{{ inventory_hostname }}
+    state: directory
 - name: Install docker-compose files
   template:
-    dest: /var/cache/garuda-{{ inventory_hostname | lower }}/docker-compose.yml
+    dest: /var/cache/garuda-{{ inventory_hostname }}/docker-compose.yml
     group: root
     mode: 0644
     owner: root
@@ -24,4 +28,4 @@
 - name: Run docker-compose up -d
   shell: docker-compose up -d --remove-orphans
   args:
-    chdir: /var/cache/garuda-{{ inventory_hostname | lower }}
+    chdir: /var/cache/garuda-{{ inventory_hostname }}

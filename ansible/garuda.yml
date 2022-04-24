@@ -22,6 +22,9 @@
         name: borg_servers
       when: "'borg_servers' in group_names"
     - import_role:
+        name: prometheus_exporter
+      when: "'monitor' in group_names"
+    - import_role:
         name: systemd
     - import_role:
         name: update_repos

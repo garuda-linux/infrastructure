@@ -6,20 +6,16 @@ sftp_enabled = true
 [garuda]
 backup-dragon
 build
-esxi-ansible
 esxi-cloud
+esxi-monitor
 esxi-repo
 esxi-web
 iso
 web
 
-[mirrors]
-#ch-mirror
-#sg-mirror
-
 [borg_clients]
-esxi-ansible
 esxi-cloud
+esxi-monitor
 esxi-web
 web
 
@@ -28,8 +24,15 @@ backup-dragon
 
 [chaotic_aur]
 build
-esxi-ansible
 esxi-repo
+
+[monitor]
+esxi-web
+esxi-cloud
 
 [misc]
 garuda-forum
+
+[mirrors]
+#ch-mirror
+#sg-mirror

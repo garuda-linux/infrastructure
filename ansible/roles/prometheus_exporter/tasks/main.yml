@@ -1,0 +1,26 @@
+- name: Install Docker & Compose
+  pacman:
+    name:
+      - docker
+      - docker-compose
+    state: present
+- name: Enable and start Docker
+  systemd:
+    name: docker
+    state: started
+    enabled: yes
+- name: Create Prometheus directory
+  file:
+    path: /var/cache/prometheus
+    state: directory
+- name: Install the exporters docker-compose files
+  template:
+    dest: /var/cache/prometheus/docker-compose.yml
+    group: root
+    mode: 0644
+    owner: root
+    src: docker-compose.yml.j2
+- name: Start the exporter docker-compose stack
+  shell: docker-compose up -d --remove-orphans
+  args:
+    chdir: /var/cache/prometheus

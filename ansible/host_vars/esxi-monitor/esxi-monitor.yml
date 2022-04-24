@@ -1,0 +1,6 @@
+---
+actual_hostname: esxi-monitor
+ansible_host: 65.108.140.36
+ansible_port: 225
+borg_dir: /var/cache/garuda-esxi-monitor
+docker_compose: true
