@@ -4,6 +4,6 @@ url = https://gitlab.com/garuda-linux/tools/buildiso-docker
 [submodule "ansible/caur"]
 path = ansible/caur
 url = https://github.com/chaotic-aur/chaotic-aur-ansible
-[submodule "ansible/library/mitogen"]
-path = ansible/library/mitogen
+[submodule "ansible/misc/mitogen"]
+path = ansible/misc/mitogen
 url = https://github.com/mitogen-hq/mitogen.git

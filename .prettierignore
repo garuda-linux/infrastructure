@@ -1,3 +1,4 @@
 .env*
 ansible/library/*
+ansible/misc/*
 config.json*

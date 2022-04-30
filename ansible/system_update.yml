@@ -38,4 +38,4 @@
           - "{{ letsencrypt_data }}/var:/var/lib/letsencrypt"
           - "/root/.cloudflare:/root/.cloudflare"
         command: 'certonly --preferred-challenges dns-01 --non-interactive --agree-tos -m "team@garudalinux.org" --dns-cloudflare --dns-cloudflare-credentials /root/.cloudflare -d "{{ letsencrypt_domain }}" --cert-name "{{ certname | default(letsencrypt_domain) }}"'
-      when: letsencrypt_domain is defined
+      when: letsencrypt_domain is defined and letsencrypt_data is defined
