@@ -3,6 +3,7 @@ actual_hostname: esxi-web
 ansible_host: 65.108.140.36
 ansible_port: 222
 borg_dir: /var/cache/garuda-esxi-web
+cf_sync_ip: true
 dl_git: true
 docker_compose: true
 goaccess: true
