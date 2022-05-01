@@ -257,3 +257,10 @@ services:
       ME_CONFIG_MONGODB_URL: {{ me_config_mongodb_url }}
     restart: always
 
+  nginx-prometheus-exporter:
+    image: nginx/nginx-prometheus-exporter:latest
+    container_name: nginx-prometheus-exporter
+    ports:
+      - 9113:9113
+    command:
+      - "-nginx.scrape-uri=http://nginx:8080/stub_status"
