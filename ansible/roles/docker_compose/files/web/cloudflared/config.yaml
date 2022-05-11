@@ -1,0 +1,11 @@
+tunnel: 81461915-3a1f-40e8-b348-fdb4b5aa5eb1
+credentials-file: /root/.cloudflared/tunnel.json
+
+ingress:
+  - hostname: mesh.garudalinux.net
+    service: http://172.17.0.1:22260
+  - hostname: npm.garudalinux.net
+    service: http://app:81
+  - hostname: matrixadmin.garudalinux.net
+    service: http://matrix_admin:80
+  - service: http_status:404

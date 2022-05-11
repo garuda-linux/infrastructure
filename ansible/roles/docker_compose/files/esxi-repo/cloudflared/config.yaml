@@ -1,0 +1,7 @@
+tunnel: fd9b0409-af0f-4eec-bb45-9c13489e7b41
+credentials-file: /root/.cloudflared/tunnel.json
+
+ingress:
+  - hostname: syncthing-esxi.garudalinux.net
+    service: http://syncthing:8384
+  - service: http_status:404

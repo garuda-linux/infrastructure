@@ -196,6 +196,14 @@
     - update-motd.timer
   notify:
     - systemd daemon-reload
+- name: Install cloudflare tunnel credentials file
+  copy:
+    content: "{{ cloudflared_tunnel }}"
+    dest: /var/cache/garuda-{{ inventory_hostname }}/cloudflared/tunnel.json
+    group: root
+    mode: 0600
+    owner: root
+  when: docker_compose | default(false) == true and cloudflared_tunnel is defined
 - name: Enable motd timer
   systemd:
     name: update-motd.timer

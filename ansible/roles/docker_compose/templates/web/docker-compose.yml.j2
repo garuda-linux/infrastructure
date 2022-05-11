@@ -125,3 +125,12 @@ services:
       DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL: {{ dd_logs_config_container_collect_all }}
       DD_PROCESS_AGENT_ENABLED: {{ dd_process_agent_enabled }}  
     restart: always
+
+  cloudflared:
+    image: cloudflare/cloudflared:2022.5.0
+    container_name: cloudflared
+    command: tunnel run
+    user: root
+    restart: always
+    volumes:
+      - './cloudflared:/root/.cloudflared'
