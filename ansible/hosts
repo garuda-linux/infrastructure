@@ -7,6 +7,7 @@ sftp_enabled = true
 backup-dragon
 build
 esxi-cloud
+exsi-iso
 esxi-monitor
 esxi-repo
 esxi-web
