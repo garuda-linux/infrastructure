@@ -196,6 +196,28 @@
     - update-motd.timer
   notify:
     - systemd daemon-reload
+- name: Install QEMU guest agent
+  pacman:
+    name: qemu-guest-agent
+  when: ansible_virtualization_type == "kvm"
+- name: Enable QEMU guest agent
+  systemd:
+    name: qemu-guest-agent.service
+    state: started
+    enabled: yes
+  when : ansible_virtualization_type == "kvm"
+- name: Install VMware tools
+  pacman:
+    name: open-vm-tools
+  when: ansible_virtualization_type == "VMware"
+- name: Enable VMware tools
+  systemd:
+    name: 
+      - vmtoolsd
+      - vmware-vmblock-fuse
+    state: started
+    enabled: yes
+  when: ansible_virtualization_type == "VMware"
 - name: Install cloudflare tunnel credentials file
   copy:
     content: "{{ cloudflared_tunnel }}"
