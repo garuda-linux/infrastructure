@@ -202,7 +202,7 @@
   when: ansible_virtualization_type == "kvm"
 - name: Enable QEMU guest agent
   systemd:
-    name: qemu-guest-agent.service
+    name: qemu-guest-agent
     state: started
     enabled: yes
   when : ansible_virtualization_type == "kvm"
@@ -212,11 +212,12 @@
   when: ansible_virtualization_type == "VMware"
 - name: Enable VMware tools
   systemd:
-    name: 
-      - vmtoolsd
-      - vmware-vmblock-fuse
+    name: "{{ item }}"
     state: started
     enabled: yes
+  loop: 
+    - vmtoolsd
+    - vmware-vmblock-fuse
   when: ansible_virtualization_type == "VMware"
 - name: Install cloudflare tunnel credentials file
   copy:
