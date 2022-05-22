@@ -220,6 +220,7 @@ services:
     container_name: privatebin
     volumes:
       - "./privatebin:/srv/data"
+      - "./configs/privatebin.cfg.php:/srv/cfg/conf.php"
     restart: always
     labels:
       - "diun.enable=true"
