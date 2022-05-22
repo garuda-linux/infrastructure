@@ -1,0 +1,29 @@
+---
+actual_hostname: chaotic-dragon
+ansible_host: 89.58.13.188
+ansible_port: 420
+docker_compose: true
+
+# Syncthing
+puid: 1000
+pgid: 1000
+tz: Europe/Berlin
+
+# Datadog
+dd_logs_enabled: true
+dd_logs_config_container_collect_all: true
+dd_process_agent_enabled: true
+
+# Toolbox
+caur_cluster_name: dragon-cluster
+caur_deploy_label: "Chaotic Dragon 🐉"
+caur_overlay_type: kernel
+caur_packager: "Nico Jensch <dr460nf1r3@chaotic.cx>"
+caur_routines: /var/cache/chaotic/routines
+caur_sign_key: BF773B6877808D28
+caur_sign_realname: "Nico Jensch"
+caur_sign_user: root
+caur_sign_user_root: /root
+caur_telegram_tag: "@dr460nf1r3"
+caur_type: cluster
+caur_url: https://builds.garudalinux.org/repos/chaotic-aur/x86_64

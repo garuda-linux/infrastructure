@@ -1,0 +1,3 @@
+---
+actual_hostname: garuda-sec
+ansible_host: 185.216.177.203

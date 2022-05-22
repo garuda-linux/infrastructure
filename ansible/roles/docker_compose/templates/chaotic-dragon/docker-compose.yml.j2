@@ -1,0 +1,42 @@
+version: "3.8"
+services:
+  # Webserver
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    #volumes:
+     # - "/srv/http/repos:/var/lib/nginx/html/builds/repos:ro"
+     # - "./conf.d:/etc/nginx/conf.d:ro"
+    restart: always
+
+  # Synchronizing all mirrors
+  syncthing:
+    image: linuxserver/syncthing:latest
+    container_name: chaotic-syncthing
+    ports:
+      - "22000:22000"
+      - "21027:21027/udp"
+    volumes:
+      - "./syncthing:/config"
+      - "/srv/http/repos:/srv/http/repos"
+    environment:
+      PUID: {{ puid }}
+      PGID: {{ pgid }} 
+      TZ: {{ tz }}
+    restart: unless-stopped
+
+  # Centralized logging
+  datadoghq:
+    image: datadog/agent:latest
+    container_name: dd-agent
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "/proc/:/host/proc/:ro"
+      - "/sys/fs/cgroup/:/host/sys/fs/cgroup:ro"
+    environment:
+      DD_API_KEY: {{ dd_api_key }}
+      DD_SITE: {{ dd_site }} 
+      DD_LOGS_ENABLED: {{ dd_logs_enabled }}
+      DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL: {{ dd_logs_config_container_collect_all }}
+      DD_PROCESS_AGENT_ENABLED: {{ dd_process_agent_enabled }}
+    restart: always

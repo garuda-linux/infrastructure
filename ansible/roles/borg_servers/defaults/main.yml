@@ -3,5 +3,4 @@ borg_repo_dir: /backups
 borg_clients:
   - esxi-cloud
   - esxi-web
-  - esxi-monitor
   - web

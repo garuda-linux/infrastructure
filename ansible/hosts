@@ -6,17 +6,18 @@ sftp_enabled = true
 [garuda]
 backup-dragon
 build
+chaotic-dragon
 esxi-cloud
-exsi-iso
 esxi-monitor
 esxi-repo
 esxi-web
+exsi-iso
 iso
+sec
 web
 
 [borg_clients]
 esxi-cloud
-esxi-monitor
 esxi-web
 web
 
@@ -25,6 +26,7 @@ backup-dragon
 
 [chaotic_aur]
 build
+chaotic-dragon
 esxi-repo
 
 [monitor]

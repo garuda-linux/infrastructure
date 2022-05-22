@@ -205,7 +205,7 @@
     name: qemu-guest-agent
     state: started
     enabled: yes
-  when : ansible_virtualization_type == "kvm"
+  when: ansible_virtualization_type == "kvm"
 - name: Install VMware tools
   pacman:
     name: open-vm-tools
@@ -215,7 +215,7 @@
     name: "{{ item }}"
     state: started
     enabled: yes
-  loop: 
+  loop:
     - vmtoolsd
     - vmware-vmblock-fuse
   when: ansible_virtualization_type == "VMware"
