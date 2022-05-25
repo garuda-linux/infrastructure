@@ -4,9 +4,12 @@ services:
   nginx:
     image: nginx:latest
     container_name: nginx
-    #volumes:
-     # - "/srv/http/repos:/var/lib/nginx/html/builds/repos:ro"
-     # - "./conf.d:/etc/nginx/conf.d:ro"
+    volumes:
+      - "/srv/http/repos:/var/lib/nginx/html/repos/chaotic-aur:ro"
+      - "./nginx/conf.d:/etc/nginx/conf.d:ro"
+      - "./nginx/nginx.conf:/etc/nginx/nginx.conf:ro"
+    ports:
+      - "80:80"
     restart: always
 
   # Synchronizing all mirrors
@@ -14,8 +17,9 @@ services:
     image: linuxserver/syncthing:latest
     container_name: chaotic-syncthing
     ports:
-      - "22000:22000"
       - "21027:21027/udp"
+      - "22000:22000"
+      - "8384:8384"
     volumes:
       - "./syncthing:/config"
       - "/srv/http/repos:/srv/http/repos"
