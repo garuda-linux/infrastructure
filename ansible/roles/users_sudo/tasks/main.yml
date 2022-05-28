@@ -94,6 +94,7 @@
     state: present
     key: "{{ item.key }}"
   loop:
-    - { name: "technetium", key: "https://github.com/technetium1.keys" }
+    - { name: "alexjp", key: "https://github.com/alexjp.keys" }
     - { name: "pedrohlc", key: "https://github.com/pedrohlc.keys" }
+    - { name: "technetium", key: "https://github.com/technetium1.keys" }
   when: (chaotic_cluster | default(false) == true) or (chaotic_primary | default(false) == true)
