@@ -35,3 +35,4 @@ repoctl_config: /usr/local/etc/chaotic-repoctl.toml
 
 # Devsec default override, needed for toolbox
 ssh_permit_root_login: yes
+ssh_listen_to: ['0.0.0.0','::'] 
