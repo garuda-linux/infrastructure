@@ -30,3 +30,4 @@
       - "/root/.cloudflare:/root/.cloudflare"
     command: 'certonly --preferred-challenges dns-01 --non-interactive --agree-tos -m "team@garudalinux.org" --dns-cloudflare --dns-cloudflare-credentials /root/.cloudflare -d "{{ letsencrypt_domain }}" --cert-name "{{ certname | default(letsencrypt_domain) }}"'
   when: letsencrypt_domain is defined and not stat_result.stat.exists
+  ignore_errors: yes

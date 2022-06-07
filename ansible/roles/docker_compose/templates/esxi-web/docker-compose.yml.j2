@@ -14,7 +14,6 @@ services:
       - "./nginx/www:/usr/share/nginx/html/www:ro"
       - "./nginx/crs-setup.conf:/usr/local/share/coreruleset/crs-setup.conf"
       - "./website:/usr/share/nginx/html/website:ro"
-      - "./certbot-webroot:/var/lib/nginx/html/acme:ro"
       - "./letsencrypt/etc:/etc/letsencrypt:ro"
     labels:
       com.datadoghq.ad.check_names: '["nginx"]'
@@ -33,10 +32,9 @@ services:
     image: certbot/dns-cloudflare:latest
     container_name: certbot
     volumes:
-      - "./certbot-webroot:/srv/http/webroot"
       - "./letsencrypt/etc:/etc/letsencrypt"
       - "./letsencrypt/var:/var/lib/letsencrypt"
-    entrypoint: "/bin/sh -c 'trap exit TERM; sleep 10; while :; do certbot renew -w /srv/http/webroot/ --webroot; sleep 12h & wait $${!}; done;'"
+    entrypoint: "/bin/sh -c 'trap exit TERM; sleep 10; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
     labels:
       - "diun.enable=true"
     restart: always

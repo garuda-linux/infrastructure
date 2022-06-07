@@ -33,4 +33,4 @@
       vars:
         - letsencrypt_data: /var/cache/garuda-{{ inventory_hostname | lower }}/letsencrypt
         - certname: garuda-{{ inventory_hostname | lower }}
-      when: letsencrypt_ddomain is defined
+      when: letsencrypt_domain is defined

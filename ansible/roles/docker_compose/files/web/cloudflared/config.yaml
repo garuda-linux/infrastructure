@@ -3,7 +3,7 @@ credentials-file: /root/.cloudflared/tunnel.json
 
 ingress:
   - hostname: mesh.garudalinux.net
-    service: http://app:443
+    service: https://app:443
     originRequest:
       noTLSVerify: true
   - hostname: npm.garudalinux.net
