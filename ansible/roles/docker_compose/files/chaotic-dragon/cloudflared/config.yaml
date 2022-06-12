@@ -1,8 +1,8 @@
-tunnel: c82ff6bf-62a8-4dba-b2eb-a8a551bdc9e3
+tunnel: d0c68dd3-8729-418f-97ce-bc62563d257f
 credentials-file: /root/.cloudflared/tunnel.json
 
 ingress:
-  - hostname: syncthing-build.garudalinux.net
+  - hostname: syncthing-dragon.garudalinux.net
     service: http://syncthing:8384
   - service: http_status:404
 

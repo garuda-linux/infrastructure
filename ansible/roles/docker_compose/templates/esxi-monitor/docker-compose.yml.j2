@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 services:
   prometheus:
     image: prom/prometheus:v2.36.1
@@ -7,12 +7,12 @@ services:
       - ./prometheus/etc:/etc/prometheus
       - ./prometheus/data:/prometheus
     command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-      - '--storage.tsdb.path=/prometheus'
-      - '--web.console.libraries=/etc/prometheus/console_libraries'
-      - '--web.console.templates=/etc/prometheus/consoles'
-      - '--storage.tsdb.retention.time=200h'
-      - '--web.enable-lifecycle'
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--web.console.libraries=/etc/prometheus/console_libraries"
+      - "--web.console.templates=/etc/prometheus/consoles"
+      - "--storage.tsdb.retention.time=200h"
+      - "--web.enable-lifecycle"
     restart: unless-stopped
     expose:
       - 9090
@@ -27,8 +27,8 @@ services:
     volumes:
       - ./alertmanager:/etc/alertmanager
     command:
-      - '--config.file=/etc/alertmanager/config.yml'
-      - '--storage.path=/alertmanager'
+      - "--config.file=/etc/alertmanager/config.yml"
+      - "--storage.path=/alertmanager"
     restart: unless-stopped
     expose:
       - 9093
@@ -45,10 +45,10 @@ services:
       - /sys:/host/sys:ro
       - /:/rootfs:ro
     command:
-      - '--path.procfs=/host/proc'
-      - '--path.rootfs=/rootfs'
-      - '--path.sysfs=/host/sys'
-      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+      - "--path.procfs=/host/proc"
+      - "--path.rootfs=/rootfs"
+      - "--path.sysfs=/host/sys"
+      - "--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)"
     restart: unless-stopped
     expose:
       - 9100
@@ -86,9 +86,9 @@ services:
       - ./grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
       - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
     environment:
-      GF_SECURITY_ADMIN_USER: {{ gf_security_admin_user }}
-      GF_SECURITY_ADMIN_PASSWORD: {{ gf_security_admin_password }}
-      GF_USERS_ALLOW_SIGN_UP=false: {{ gf_users_allow_sign_up }}
+      GF_SECURITY_ADMIN_USER: { { gf_security_admin_user } }
+      GF_SECURITY_ADMIN_PASSWORD: { { gf_security_admin_password } }
+      GF_USERS_ALLOW_SIGN_UP=false: { { gf_users_allow_sign_up } }
     restart: unless-stopped
     expose:
       - 3000
@@ -119,14 +119,24 @@ services:
     volumes:
       - ./caddy:/etc/caddy
     environment:
-      ADMIN_USER: {{ admin_user }}
-      ADMIN_PASSWORD: {{ admin_password }}
-      ADMIN_PASSWORD_HASH: {{ admin_password_hash }}
+      ADMIN_USER: { { admin_user } }
+      ADMIN_PASSWORD: { { admin_password } }
+      ADMIN_PASSWORD_HASH: { { admin_password_hash } }
     restart: unless-stopped
     networks:
       - monitor-net
     labels:
       org.label-schema.group: "monitoring"
+
+  # Private network
+  cloudflared:
+    image: cloudflare/cloudflared:2022.5.3
+    container_name: cloudflared
+    command: tunnel run
+    user: root
+    restart: always
+    volumes:
+      - "./cloudflared:/root/.cloudflared"
 
 networks:
   monitor-net:

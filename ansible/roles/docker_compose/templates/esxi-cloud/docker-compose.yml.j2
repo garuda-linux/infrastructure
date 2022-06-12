@@ -5,9 +5,9 @@ services:
     image: linuxserver/nextcloud:latest
     container_name: nextcloud
     environment:
-      PUID: {{ puid }}
-      PGID: {{ pgid }} 
-      TZ: {{ tz }}
+      PUID: { { puid } }
+      PGID: { { pgid } }
+      TZ: { { tz } }
     ports:
       - 443:443
     volumes:
@@ -22,10 +22,10 @@ services:
     container_name: nextcloud_db
     command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
     environment:
-      MYSQL_ROOT_PASSWORD: {{ mysql_root_password }}
-      MYSQL_PASSWORD: {{ mysql_password }}
-      MYSQL_DATABASE: {{ mysql_database }}
-      MYSQL_USER: {{ mysql_user }}
+      MYSQL_ROOT_PASSWORD: { { mysql_root_password } }
+      MYSQL_PASSWORD: { { mysql_password } }
+      MYSQL_DATABASE: { { mysql_database } }
+      MYSQL_USER: { { mysql_user } }
     volumes:
       - "./nextcloud/db:/var/lib/mysql"
     restart: always
@@ -34,7 +34,7 @@ services:
     image: redis:latest
     container_name: nextcloud_redis
     environment:
-      ALLOW_EMPTY_PASSWORD: {{ allow_empty_password }}
+      ALLOW_EMPTY_PASSWORD: { { allow_empty_password } }
     restart: always
     labels:
       - "diun.enable=true"
@@ -48,11 +48,12 @@ services:
       - "/proc/:/host/proc/:ro"
       - "/sys/fs/cgroup/:/host/sys/fs/cgroup:ro"
     environment:
-      DD_API_KEY: {{ dd_api_key }}
-      DD_SITE: {{ dd_site }} 
-      DD_LOGS_ENABLED: {{ dd_logs_enabled }}
-      DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL: {{ dd_logs_config_container_collect_all }}
-      DD_PROCESS_AGENT_ENABLED: {{ dd_process_agent_enabled }}
+      DD_API_KEY: { { dd_api_key } }
+      DD_SITE: { { dd_site } }
+      DD_LOGS_ENABLED: { { dd_logs_enabled } }
+      DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL:
+        { { dd_logs_config_container_collect_all } }
+      DD_PROCESS_AGENT_ENABLED: { { dd_process_agent_enabled } }
     restart: always
     labels:
       - "diun.enable=true"
@@ -66,13 +67,23 @@ services:
       - "./diun:/data"
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
     environment:
-      DIUN_NOTIF_TELEGRAM_CHATIDS: {{ diun_notif_telegram_chatids }}
-      DIUN_NOTIF_TELEGRAM_TOKEN: {{ diun_notif_telegram_token }}
-      DIUN_PROVIDERS_DOCKER: {{ diun_providers_docker }}
+      DIUN_NOTIF_TELEGRAM_CHATIDS: { { diun_notif_telegram_chatids } }
+      DIUN_NOTIF_TELEGRAM_TOKEN: { { diun_notif_telegram_token } }
+      DIUN_PROVIDERS_DOCKER: { { diun_providers_docker } }
       DIUN_WATCH_SCHEDULE: "{{ diun_watch_schedule }}"
-      DIUN_WATCH_WORKERS: {{ diun_watch_workers }}
-      LOG_JSON: {{ log_json }}
-      LOG_LEVEL: {{ log_level }}
+      DIUN_WATCH_WORKERS: { { diun_watch_workers } }
+      LOG_JSON: { { log_json } }
+      LOG_LEVEL: { { log_level } }
     restart: always
     labels:
       - "diun.enable=true"
+
+  # Private network
+  cloudflared:
+    image: cloudflare/cloudflared:2022.5.3
+    container_name: cloudflared
+    command: tunnel run
+    user: root
+    restart: always
+    volumes:
+      - "./cloudflared:/root/.cloudflared"

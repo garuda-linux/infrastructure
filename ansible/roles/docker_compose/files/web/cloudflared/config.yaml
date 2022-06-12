@@ -11,3 +11,6 @@ ingress:
   - hostname: matrixadmin.garudalinux.net
     service: http://matrix_admin:80
   - service: http_status:404
+
+warp-routing:
+  enabled: true

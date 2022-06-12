@@ -57,15 +57,15 @@ services:
     volumes:
       - "./whoogle:/config"
     environment:
-      WHOOGLE_AUTOCOMPLETE: {{ whoogle_autocomplete }}
-      WHOOGLE_CONFIG_ALTS: {{ whoogle_config_alts }}
-      WHOOGLE_CONFIG_LANGUAGE: {{ whoogle_config_language }}
-      WHOOGLE_CONFIG_NEW_TAB: {{ whoogle_config_new_tab }}
-      WHOOGLE_CONFIG_SEARCH_LANGUAGE: {{ whoogle_config_search_language }}
-      WHOOGLE_CONFIG_THEME: {{ whoogle_config_theme }}
-      WHOOGLE_CONFIG_URL: {{ whoogle_config_url }}
-      WHOOGLE_CONFIG_VIEW_IMAGE: {{ whoogle_config_view_image }}
-      WHOOGLE_RESULTS_PER_PAGE: {{ whoogle_results_per_page }}
+      WHOOGLE_AUTOCOMPLETE: { { whoogle_autocomplete } }
+      WHOOGLE_CONFIG_ALTS: { { whoogle_config_alts } }
+      WHOOGLE_CONFIG_LANGUAGE: { { whoogle_config_language } }
+      WHOOGLE_CONFIG_NEW_TAB: { { whoogle_config_new_tab } }
+      WHOOGLE_CONFIG_SEARCH_LANGUAGE: { { whoogle_config_search_language } }
+      WHOOGLE_CONFIG_THEME: { { whoogle_config_theme } }
+      WHOOGLE_CONFIG_URL: { { whoogle_config_url } }
+      WHOOGLE_CONFIG_VIEW_IMAGE: { { whoogle_config_view_image } }
+      WHOOGLE_RESULTS_PER_PAGE: { { whoogle_results_per_page } }
     restart: always
     labels:
       - "diun.enable=true"
@@ -79,11 +79,12 @@ services:
       - "/proc/:/host/proc/:ro"
       - "/sys/fs/cgroup/:/host/sys/fs/cgroup:ro"
     environment:
-      DD_API_KEY: {{ dd_api_key }}
-      DD_SITE: {{ dd_site }} 
-      DD_LOGS_ENABLED: {{ dd_logs_enabled }}
-      DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL: {{ dd_logs_config_container_collect_all }}
-      DD_PROCESS_AGENT_ENABLED: {{ dd_process_agent_enabled }}
+      DD_API_KEY: { { dd_api_key } }
+      DD_SITE: { { dd_site } }
+      DD_LOGS_ENABLED: { { dd_logs_enabled } }
+      DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL:
+        { { dd_logs_config_container_collect_all } }
+      DD_PROCESS_AGENT_ENABLED: { { dd_process_agent_enabled } }
     restart: always
     labels:
       - "diun.enable=true"
@@ -97,13 +98,13 @@ services:
       - "./diun:/data"
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
     environment:
-      DIUN_NOTIF_TELEGRAM_CHATIDS: {{ diun_notif_telegram_chatids }}
-      DIUN_NOTIF_TELEGRAM_TOKEN: {{ diun_notif_telegram_token }}
-      DIUN_PROVIDERS_DOCKER: {{ diun_providers_docker }}
+      DIUN_NOTIF_TELEGRAM_CHATIDS: { { diun_notif_telegram_chatids } }
+      DIUN_NOTIF_TELEGRAM_TOKEN: { { diun_notif_telegram_token } }
+      DIUN_PROVIDERS_DOCKER: { { diun_providers_docker } }
       DIUN_WATCH_SCHEDULE: "{{ diun_watch_schedule }}"
-      DIUN_WATCH_WORKERS: {{ diun_watch_workers }}
-      LOG_JSON: {{ log_json }}
-      LOG_LEVEL: {{ log_level }}
+      DIUN_WATCH_WORKERS: { { diun_watch_workers } }
+      LOG_JSON: { { log_json } }
+      LOG_LEVEL: { { log_level } }
     restart: always
     labels:
       - "diun.enable=true"
@@ -112,14 +113,14 @@ services:
   searx:
     image: searxng/searxng:latest
     container_name: searx
-    command: {{ searxng_command }}
+    command: { { searxng_command } }
     volumes:
       - "./searxng:/etc/searxng:rw"
     environment:
-      BIND_ADDRESS: {{ bind_address }}
-      BASE_URL: {{ base_url }}
-      MORTY_URL: {{ morty_url }}
-      MORTY_KEY: {{ morty_key }}
+      BIND_ADDRESS: { { bind_address } }
+      BASE_URL: { { base_url } }
+      MORTY_URL: { { morty_url } }
+      MORTY_KEY: { { morty_key } }
     cap_drop:
       - ALL
     cap_add:
@@ -138,8 +139,8 @@ services:
       - "127.0.0.1:3000:3000"
     command: -timeout 6 -ipv6
     environment:
-      MORTY_KEY: {{ morty_key }}
-      MORTY_ADDRESS: {{ morty_address }}
+      MORTY_KEY: { { morty_key } }
+      MORTY_ADDRESS: { { morty_address } }
     logging:
       driver: none
     read_only: true
@@ -170,17 +171,17 @@ services:
     container_name: syncserver
     image: mozilla/syncserver:latest
     volumes:
-    - ./syncserver:/data
+      - ./syncserver:/data
     environment:
-      PORT: {{ ffsync_port }}
-      SYNCSERVER_BATCH_UPLOAD_ENABLED: {{ syncserver_batch_upload_enabled }}
-      SYNCSERVER_FORCE_WSGI_ENVIRON: {{ syncserver_force_wsgi_environ }}
-      SYNCSERVER_PUBLIC_URL: {{ syncserver_public_url }}
-      SYNCSERVER_SECRET: {{ syncserver_secret }}
-      SYNCSERVER_SQLURI: {{ syncserver_sqluri }}
+      PORT: { { ffsync_port } }
+      SYNCSERVER_BATCH_UPLOAD_ENABLED: { { syncserver_batch_upload_enabled } }
+      SYNCSERVER_FORCE_WSGI_ENVIRON: { { syncserver_force_wsgi_environ } }
+      SYNCSERVER_PUBLIC_URL: { { syncserver_public_url } }
+      SYNCSERVER_SECRET: { { syncserver_secret } }
+      SYNCSERVER_SQLURI: { { syncserver_sqluri } }
     restart: always
     labels:
-    - "diun.enable=true"
+      - "diun.enable=true"
 
   # Web IRC access
   thelounge:
@@ -199,15 +200,15 @@ services:
     volumes:
       - "./bitwarden:/data"
     environment:
-      WEBSOCKET_ENABLED: {{ websocket_enabled }}
-      SIGNUPS_ALLOWED: {{ signups_allowed }}
-      SMTP_HOST: {{ smtp_host }}
-      SMTP_FROM: {{ smtp_from }}
-      SMTP_PORT: {{ smtp_port }}
-      SMTP_SSL: {{ smtp_ssl }}
-      SMTP_USERNAME: {{ smtp_username }}
-      SMTP_PASSWORD: {{ smtp_password }}
-      DOMAIN: {{ domain }}
+      WEBSOCKET_ENABLED: { { websocket_enabled } }
+      SIGNUPS_ALLOWED: { { signups_allowed } }
+      SMTP_HOST: { { smtp_host } }
+      SMTP_FROM: { { smtp_from } }
+      SMTP_PORT: { { smtp_port } }
+      SMTP_SSL: { { smtp_ssl } }
+      SMTP_USERNAME: { { smtp_username } }
+      SMTP_PASSWORD: { { smtp_password } }
+      DOMAIN: { { domain } }
     restart: always
     labels:
       - "diun.enable=true"
@@ -240,8 +241,8 @@ services:
     ports:
       - 27017:27017
     environment:
-      MONGO_INITDB_ROOT_USERNAME: {{ mongo_initdb_root_username }}
-      MONGO_INITDB_ROOT_PASSWORD: {{ mongo_initdb_root_password }}
+      MONGO_INITDB_ROOT_USERNAME: { { mongo_initdb_root_username } }
+      MONGO_INITDB_ROOT_PASSWORD: { { mongo_initdb_root_password } }
     restart: always
 
   # MongoDB admin interface
@@ -251,9 +252,9 @@ services:
     ports:
       - 8081:8081
     environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: {{ me_config_mongodb_adminusername }}
-      ME_CONFIG_MONGODB_ADMINPASSWORD: {{  me_config_mongodb_adminpassword }}
-      ME_CONFIG_MONGODB_URL: {{ me_config_mongodb_url }}
+      ME_CONFIG_MONGODB_ADMINUSERNAME: { { me_config_mongodb_adminusername } }
+      ME_CONFIG_MONGODB_ADMINPASSWORD: { { me_config_mongodb_adminpassword } }
+      ME_CONFIG_MONGODB_URL: { { me_config_mongodb_url } }
     restart: always
 
   # Nginx stat scraping
@@ -264,3 +265,13 @@ services:
       - 9113:9113
     command:
       - "-nginx.scrape-uri=http://nginx:8080/stub_status"
+
+  # Private network
+  cloudflared:
+    image: cloudflare/cloudflared:2022.5.3
+    container_name: cloudflared
+    command: tunnel run
+    user: root
+    restart: always
+    volumes:
+      - "./cloudflared:/root/.cloudflared"

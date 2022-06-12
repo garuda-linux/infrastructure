@@ -38,11 +38,11 @@ services:
       - "/proc/:/host/proc/:ro"
       - "/sys/fs/cgroup/:/host/sys/fs/cgroup:ro"
     environment:
-      DD_API_KEY: {{ dd_api_key }}
-      DD_SITE: {{ dd_site }} 
-      DD_LOGS_ENABLED: {{ dd_logs_enabled }}
-      DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL: {{ dd_logs_config_container_collect_all }}
-      DD_PROCESS_AGENT_ENABLED: {{ dd_process_agent_enabled }}
+      DD_API_KEY: { { dd_api_key } }
+      DD_SITE: { { dd_site } }
+      DD_LOGS_ENABLED: { { dd_logs_enabled } }
+      DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL: { { dd_logs_config_container_collect_all } }
+      DD_PROCESS_AGENT_ENABLED: { { dd_process_agent_enabled } }
     restart: always
 
   # Garuda iso autobuilder
@@ -58,10 +58,10 @@ services:
       - "/var/cache/pacman/pkg/:/var/cache/pacman/pkg/"
       - "./buildiso/iso:/var/cache/garuda-tools/garuda-builds/iso/"
       - "./buildiso/logs:/var/cache/garuda-tools/garuda-logs/"
-      - "./id_ed25519:/root/.ssh/id_ed25519"#
+      - "./id_ed25519:/root/.ssh/id_ed25519"
     environment:
-      TELEGRAM: {{ telegram}}
-      ISO-TYPE: {{ iso_type }}
+      TELEGRAM: { { telegram } }
+      ISO-TYPE: { { iso_type } }
     restart: always
 
   # Private network
@@ -73,6 +73,6 @@ services:
     restart: always
     volumes:
       - "./cloudflared:/root/.cloudflared"
-
+      
 # certbot init
 # sudo docker run -p 80:80 -p 443:443 -it --rm -v "/var/cache/garuda-iso/letsencrypt/etc:/etc/letsencrypt" -v "/var/cache/garuda-iso/letsencrypt/var:/var/lib/letsencrypt" certbot/certbot certonly --standalone --agree-tos -n -m "team@garudalinux.org" -d "iso.builds.garudalinux.org"

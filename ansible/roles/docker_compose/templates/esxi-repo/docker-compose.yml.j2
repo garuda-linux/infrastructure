@@ -19,9 +19,9 @@ services:
     image: linuxserver/syncthing:latest
     container_name: garuda-syncthing
     environment:
-      PUID: {{ puid }}
-      PGID: {{ pgid }} 
-      TZ: {{ tz }}
+      PUID: { { puid } }
+      PGID: { { pgid } }
+      TZ: { { tz } }
     ports:
       - "22000:22000"
       - "21027:21027/udp"
@@ -41,11 +41,11 @@ services:
       - "/proc/:/host/proc/:ro"
       - "/sys/fs/cgroup/:/host/sys/fs/cgroup:ro"
     environment:
-      DD_API_KEY: {{ dd_api_key }}
-      DD_SITE: {{ dd_site }} 
-      DD_LOGS_ENABLED: {{ dd_logs_enabled }}
-      DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL: {{ dd_logs_config_container_collect_all }}
-      DD_PROCESS_AGENT_ENABLED: {{ dd_process_agent_enabled }}
+      DD_API_KEY: { { dd_api_key } }
+      DD_SITE: { { dd_site } }
+      DD_LOGS_ENABLED: { { dd_logs_enabled } }
+      DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL:  { { dd_logs_config_container_collect_all } }
+      DD_PROCESS_AGENT_ENABLED: { { dd_process_agent_enabled } }
     restart: always
     labels:
       - "diun.enable=true"
@@ -70,13 +70,13 @@ services:
       - "./diun:/data"
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
     environment:
-      DIUN_NOTIF_TELEGRAM_CHATIDS: {{ diun_notif_telegram_chatids }}
-      DIUN_NOTIF_TELEGRAM_TOKEN: {{ diun_notif_telegram_token }}
-      DIUN_PROVIDERS_DOCKER: {{ diun_providers_docker }}
+      DIUN_NOTIF_TELEGRAM_CHATIDS: { { diun_notif_telegram_chatids } }
+      DIUN_NOTIF_TELEGRAM_TOKEN: { { diun_notif_telegram_token } }
+      DIUN_PROVIDERS_DOCKER: { { diun_providers_docker } }
       DIUN_WATCH_SCHEDULE: "{{ diun_watch_schedule }}"
-      DIUN_WATCH_WORKERS: {{ diun_watch_workers }}
-      LOG_JSON: {{ log_json }}
-      LOG_LEVEL: {{ log_level }}
+      DIUN_WATCH_WORKERS: { { diun_watch_workers } }
+      LOG_JSON: { { log_json } }
+      LOG_LEVEL: { { log_level } }
     restart: always
     labels:
       - "diun.enable=true"
