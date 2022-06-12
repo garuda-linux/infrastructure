@@ -18,10 +18,10 @@ services:
     image: jc21/mariadb-aria:latest-innodb
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: { { npm_mysql_root_password } }
-      MYSQL_DATABASE: { { npm_mysql_database } }
-      MYSQL_USER: { { npm_mysql_user } }
-      MYSQL_PASSWORD: { { npm_mysql_password } }
+      MYSQL_ROOT_PASSWORD: {{ npm_mysql_root_password }}
+      MYSQL_DATABASE: {{ npm_mysql_database }}
+      MYSQL_USER: {{ npm_mysql_user }}
+      MYSQL_PASSWORD: {{ npm_mysql_password }}
     volumes:
       - "./npm/data/mysql:/var/lib/mysql"
 
@@ -34,12 +34,12 @@ services:
     volumes:
       - "./wikijs/assets:/wiki/assets/favicons"
     environment:
-      DB_TYPE: { { db_type } }
-      DB_HOST: { { db_host } }
-      DB_PORT: { { db_port } }
-      DB_USER: { { db_user } }
-      DB_PASS: { { db_pass } }
-      DB_NAME: { { db_name } }
+      DB_TYPE: {{ db_type }}
+      DB_HOST: {{ db_host }}
+      DB_PORT: {{ db_port }}
+      DB_USER: {{ db_user }}
+      DB_PASS: {{ db_pass }}
+      DB_NAME: {{ db_name }}
     restart: always
 
   # Privacy friendly analytics
@@ -51,7 +51,7 @@ services:
     volumes:
       - "./matomo/db:/var/lib/mysql"
     environment:
-      MYSQL_ROOT_PASSWORD: { { mysql_root_password } }
+      MYSQL_ROOT_PASSWORD: {{ mysql_root_password }}
 
   matomo_app:
     image: matomo:latest
@@ -62,14 +62,14 @@ services:
       - "./matomo/logs:/var/www/html/logs"
       - "./matomo/www:/var/www/html"
     environment:
-      MYSQL_PASSWORD: { { mysql_password } }
-      MYSQL_DATABASE: { { mysql_database } }
-      MYSQL_USER: { { mysql_user } }
-      MATOMO_DATABASE_ADAPTER: { { mysql_database_adapter } }
-      MATOMO_DATABASE_TABLES_PREFIX: { { matomo_database_tables_prefix } }
-      MATOMO_DATABASE_USERNAME: { { matomo_database_username } }
-      MATOMO_DATABASE_PASSWORD: { { matomo_database_password } }
-      MATOMO_DATABASE_DBNAME: { { matomo_database_dbname } }
+      MYSQL_PASSWORD: {{ mysql_password }}
+      MYSQL_DATABASE: {{ mysql_database }}
+      MYSQL_USER: {{ mysql_user }}
+      MATOMO_DATABASE_ADAPTER: {{ mysql_database_adapter }}
+      MATOMO_DATABASE_TABLES_PREFIX: {{ matomo_database_tables_prefix }}
+      MATOMO_DATABASE_USERNAME: {{ matomo_database_username }}
+      MATOMO_DATABASE_PASSWORD: {{ matomo_database_password }}
+      MATOMO_DATABASE_DBNAME: {{ matomo_database_dbname }}
 
   # Matrix homeserver
   matrix:
@@ -104,8 +104,8 @@ services:
     image: postgres:14-alpine
     container_name: postgres
     environment:
-      POSTGRES_PASSWORD: { { postgres_password } }
-      POSTGRES_USER: { { postgres_user } }
+      POSTGRES_PASSWORD: {{ postgres_password }}
+      POSTGRES_USER: {{ postgres_user }}
     volumes:
       - "./postgres/:/var/lib/postgresql/data"
     restart: always
@@ -119,12 +119,11 @@ services:
       - "/proc/:/host/proc/:ro"
       - "/sys/fs/cgroup/:/host/sys/fs/cgroup:ro"
     environment:
-      DD_API_KEY: { { dd_api_key } }
-      DD_SITE: { { dd_site } }
-      DD_LOGS_ENABLED: { { dd_logs_enabled } }
-      DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL:
-        { { dd_logs_config_container_collect_all } }
-      DD_PROCESS_AGENT_ENABLED: { { dd_process_agent_enabled } }
+      DD_API_KEY: {{ dd_api_key }}
+      DD_SITE: {{ dd_site }}
+      DD_LOGS_ENABLED: {{ dd_logs_enabled }}
+      DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL: {{ dd_logs_config_container_collect_all }}
+      DD_PROCESS_AGENT_ENABLED: {{ dd_process_agent_enabled }}
     restart: always
 
   # Private network

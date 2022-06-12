@@ -32,9 +32,9 @@ services:
       - "./syncthing:/config"
       - "/srv/http/repos:/srv/http/repos"
     environment:
-      PUID: { { puid } }
-      PGID: { { pgid } }
-      TZ: { { tz } }
+      PUID: {{ puid }}
+      PGID: {{ pgid }}
+      TZ: {{ tz }}
     restart: unless-stopped
 
   # Letsencrypt SSL certificates
@@ -56,11 +56,11 @@ services:
       - "/proc/:/host/proc/:ro"
       - "/sys/fs/cgroup/:/host/sys/fs/cgroup:ro"
     environment:
-      DD_API_KEY: { { dd_api_key } }
-      DD_SITE: { { dd_site } }
-      DD_LOGS_ENABLED: { { dd_logs_enabled } }
-      DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL:  { { dd_logs_config_container_collect_all } }
-      DD_PROCESS_AGENT_ENABLED: { { dd_process_agent_enabled } }
+      DD_API_KEY: {{ dd_api_key }}
+      DD_SITE: {{ dd_site }}
+      DD_LOGS_ENABLED: {{ dd_logs_enabled }}
+      DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL:  {{ dd_logs_config_container_collect_all }}
+      DD_PROCESS_AGENT_ENABLED: {{ dd_process_agent_enabled }}
     restart: always
 
   # Private network
@@ -72,6 +72,7 @@ services:
     restart: always
     volumes:
       - "./cloudflared:/root/.cloudflared"
+
 # certbot init
 # sudo docker run -p 80:80 -p 443:443 -it --rm --name certbot \
 #            -v "/var/cache/garuda-build/letsencrypt/etc:/etc/letsencrypt" \

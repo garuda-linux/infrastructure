@@ -38,11 +38,11 @@ services:
       - "/proc/:/host/proc/:ro"
       - "/sys/fs/cgroup/:/host/sys/fs/cgroup:ro"
     environment:
-      DD_API_KEY: { { dd_api_key } }
-      DD_SITE: { { dd_site } }
-      DD_LOGS_ENABLED: { { dd_logs_enabled } }
-      DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL: { { dd_logs_config_container_collect_all } }
-      DD_PROCESS_AGENT_ENABLED: { { dd_process_agent_enabled } }
+      DD_API_KEY: {{ dd_api_key }}
+      DD_SITE: {{ dd_site }}
+      DD_LOGS_ENABLED: {{ dd_logs_enabled }}
+      DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL: {{ dd_logs_config_container_collect_all }}
+      DD_PROCESS_AGENT_ENABLED: {{ dd_process_agent_enabled }}
     restart: always
 
   # Garuda iso autobuilder
@@ -60,8 +60,8 @@ services:
       - "./buildiso/logs:/var/cache/garuda-tools/garuda-logs/"
       - "./id_ed25519:/root/.ssh/id_ed25519"
     environment:
-      TELEGRAM: { { telegram } }
-      ISO-TYPE: { { iso_type } }
+      TELEGRAM: {{ telegram }}
+      ISO-TYPE: {{ iso_type }}
     restart: always
 
   # Private network
