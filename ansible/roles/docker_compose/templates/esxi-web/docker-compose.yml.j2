@@ -256,6 +256,7 @@ services:
       ME_CONFIG_MONGODB_URL: {{ me_config_mongodb_url }}
     restart: always
 
+  # Nginx stat scraping
   nginx-prometheus-exporter:
     image: nginx/nginx-prometheus-exporter:latest
     container_name: nginx-prometheus-exporter

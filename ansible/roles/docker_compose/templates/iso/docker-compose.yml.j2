@@ -64,5 +64,15 @@ services:
       ISO-TYPE: {{ iso_type }}
     restart: always
 
+  # Private network
+  cloudflared:
+    image: cloudflare/cloudflared:2022.5.3
+    container_name: cloudflared
+    command: tunnel run
+    user: root
+    restart: always
+    volumes:
+      - "./cloudflared:/root/.cloudflared"
+
 # certbot init
 # sudo docker run -p 80:80 -p 443:443 -it --rm -v "/var/cache/garuda-iso/letsencrypt/etc:/etc/letsencrypt" -v "/var/cache/garuda-iso/letsencrypt/var:/var/lib/letsencrypt" certbot/certbot certonly --standalone --agree-tos -n -m "team@garudalinux.org" -d "iso.builds.garudalinux.org"
