@@ -2,7 +2,7 @@ version: "3.8"
 services:
   # Webserver
   nginx:
-    image: nginx:latest
+    image: nginx:alpine-perl
     container_name: nginx
     volumes:
       - "./buildiso/iso:/var/lib/nginx/html/builds/iso:rw"
