@@ -65,7 +65,7 @@ services:
 
   # Private network
   cloudflared:
-    image: cloudflare/cloudflared:2022.6.1
+    image: cloudflare/cloudflared:latest
     container_name: cloudflared
     command: tunnel run
     user: root

@@ -1,5 +1,10 @@
 tunnel: 37c88c54-d954-45b6-bbdd-0a323764cb76
 credentials-file: /root/.cloudflared/tunnel.json
 
+ingress:
+  - hostname: monitor.garudalinux.net
+    service: http://grafana:3000
+  - service: http_status:404
+
 warp-routing:
   enabled: true
