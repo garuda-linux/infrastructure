@@ -135,3 +135,26 @@ services:
     restart: always
     volumes:
       - "./cloudflared:/root/.cloudflared"
+
+  # Netdata
+  netdata:
+    image: netdata/netdata:latest
+    container_name: netdata
+    hostname: garuda-web
+    restart: always
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - apparmor:unconfined
+    volumes:
+      - ./netdata/config:/etc/netdata
+      - ./netdata/lib:/var/lib/netdata
+      - ./netdata/cache:/var/cache/netdata
+      - /etc/passwd:/host/etc/passwd:ro
+      - /etc/group:/host/etc/group:ro
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /etc/os-release:/host/etc/os-release:ro
+    environment:
+      NETDATA_CLAIM_TOKEN: {{ netdata_claim_token }}
+      NETDATA_CLAIM_URL: {{ netdata_claim_url }}
