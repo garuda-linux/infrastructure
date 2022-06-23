@@ -16,6 +16,7 @@ caur_sign_realname: "Nico Jensch"
 caur_sign_user: nico
 caur_sign_user_home: /root
 caur_telegram_tag: "@dr460nf1r3"
+caur_type: primary
 caur_url: http://repo.garudalinux.org/repos/garuda/x86_64
 repoctl_config: /etc/chaotic/repoctl.toml
 
