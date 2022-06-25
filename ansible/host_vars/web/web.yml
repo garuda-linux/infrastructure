@@ -8,3 +8,7 @@ docker_compose: true
 dd_logs_config_container_collect_all: true
 dd_logs_enabled: true
 dd_process_agent_enabled: true
+
+# Zerotier
+zerotier_member_description: garuda-web
+zerotier_member_ip_assignments: ["10.241.0.4"]

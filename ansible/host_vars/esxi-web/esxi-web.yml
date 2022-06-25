@@ -58,3 +58,7 @@ whoogle_config_theme: dark
 whoogle_config_url: https://search.garudalinux.org
 whoogle_config_view_image: 1
 whoogle_results_per_page: 15
+
+# Zerotier
+zerotier_member_description: backup-dragon
+zerotier_member_ip_assignments: ["10.241.0.1"]

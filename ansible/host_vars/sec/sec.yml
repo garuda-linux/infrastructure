@@ -1,3 +1,7 @@
 ---
 actual_hostname: garuda-sec
 ansible_host: 185.216.177.203
+
+# Zerotier
+zerotier_member_description: esxi-cloud
+zerotier_member_ip_assignments: ["10.241.0.4"]

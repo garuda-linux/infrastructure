@@ -16,3 +16,7 @@ diun_watch_schedule: "@hourly"
 diun_watch_workers: 20
 log_json: false
 log_level: info
+
+# Zerotier
+zerotier_member_description: esxi-cloud
+zerotier_member_ip_assignments: ["10.241.0.11"]

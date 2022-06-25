@@ -2,3 +2,7 @@
 actual_hostname: garuda-forum
 ansible_host: 157.230.4.68
 discourse: true
+
+# Zerotier
+zerotier_member_description: garuda-forum
+zerotier_member_ip_assignments: ["10.241.0.3"]

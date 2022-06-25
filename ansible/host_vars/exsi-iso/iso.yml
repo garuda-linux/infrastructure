@@ -6,3 +6,7 @@ ansible_port: 226
 # Devsec - we don't want to disable efi as its needed for iso builds
 os_modprobe_enabled: false
 hidepid_option: 0
+
+# Zerotier
+zerotier_member_description: esxi-iso
+zerotier_member_ip_assignments: ["10.241.0.7"]

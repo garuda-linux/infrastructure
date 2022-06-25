@@ -7,3 +7,6 @@ url = https://github.com/chaotic-aur/chaotic-aur-ansible
 [submodule "ansible/misc/mitogen"]
 path = ansible/misc/mitogen
 url = https://github.com/mitogen-hq/mitogen.git
+[submodule "ansible/roles/zerotier"]
+path = ansible/roles/zerotier
+url = https://github.com/m4rcu5nl/ansible-role-zerotier.git
