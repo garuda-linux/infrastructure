@@ -196,6 +196,11 @@
     - update-motd.timer
   notify:
     - systemd daemon-reload
+- name: Enable motd timer
+  systemd:
+    name: update-motd.timer
+    state: started
+    enabled: yes
 - name: Install QEMU guest agent
   pacman:
     name: qemu-guest-agent
@@ -229,13 +234,24 @@
     owner: root
   when: docker_compose | default(false) == true and cloudflared_tunnel is defined
 - name: Apply buffer sizes recommended by cloudflared
-  ansible.posix.sysctl:
+  sysctl:
     name: net.core.rmem_max
     value: 2500000
     state: present
   when: docker_compose | default(false) == true and cloudflared_tunnel is defined
-- name: Enable motd timer
-  systemd:
-    name: update-motd.timer
-    state: started
-    enabled: yes
+  ignore_errors: yes
+- name: Install Netdata Telegram notification token
+  template:
+    dest: /var/cache/garuda-{{ inventory_hostname }}/netdata/config/health_alarm_notify.conf
+    group: 201
+    owner: 201
+    src: health_alarm_notify.conf.j2
+  when: docker_compose | default(false) == true
+- name: Fix Netdata directory permissions
+  file:
+    path:  /var/cache/garuda-{{ inventory_hostname }}/netdata
+    state: directory
+    recurse: yes
+    owner: 201
+    group: 201
+  when: docker_compose | default(false) == true

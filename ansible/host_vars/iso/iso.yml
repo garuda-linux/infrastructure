@@ -1,4 +1,4 @@
----
+# Base values
 actual_hostname: garuda-iso
 ansible_host: 78.129.140.86
 docker_compose: true
@@ -6,6 +6,11 @@ letsencrypt_domain: "iso.builds.garudalinux.org"
 
 # Devsec - we don't want to disable efi as its needed for iso builds
 os_modprobe_enabled: false
+
+# Datadog
+dd_logs_enabled: true
+dd_logs_config_container_collect_all: true
+dd_process_agent_enabled: true
 
 # Zerotier
 zerotier_member_description: garuda-iso

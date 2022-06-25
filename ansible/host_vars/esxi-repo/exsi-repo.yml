@@ -1,3 +1,4 @@
+# Base values
 actual_hostname: esxi-repo
 ansible_host: 65.108.140.36
 ansible_port: 223
@@ -30,6 +31,11 @@ diun_watch_schedule: "@hourly"
 diun_watch_workers: 20
 log_json: false
 log_level: info
+
+# Datadog
+dd_logs_enabled: true
+dd_logs_config_container_collect_all: true
+dd_process_agent_enabled: true
 
 # Zerotier
 zerotier_member_description: esxi-repo
