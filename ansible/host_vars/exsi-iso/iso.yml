@@ -1,4 +1,3 @@
----
 actual_hostname: exsi-iso
 ansible_host: 65.108.140.36
 ansible_port: 226

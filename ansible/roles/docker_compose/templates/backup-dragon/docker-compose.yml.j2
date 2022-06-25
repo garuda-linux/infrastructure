@@ -1,15 +1,5 @@
 version: "3.8"
 services:
-  # Private network
-  cloudflared:
-    image: cloudflare/cloudflared:latest
-    container_name: cloudflared
-    command: tunnel run
-    user: root
-    restart: always
-    volumes:
-      - "./cloudflared:/root/.cloudflared"
-
   # Netdata
   netdata:
     image: netdata/netdata:latest

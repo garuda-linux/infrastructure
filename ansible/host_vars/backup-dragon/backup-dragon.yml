@@ -1,4 +1,3 @@
----
 actual_hostname: backup-dragon
 ansible_host: 89.58.13.188
 ansible_port: 4200

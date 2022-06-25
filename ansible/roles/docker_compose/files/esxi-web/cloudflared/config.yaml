@@ -1,5 +1,0 @@
-tunnel: 26f05339-ae7f-446c-8c0a-497d471bf231
-credentials-file: /root/.cloudflared/tunnel.json
-
-warp-routing:
-  enabled: true

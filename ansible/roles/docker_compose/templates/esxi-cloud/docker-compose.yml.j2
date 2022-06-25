@@ -78,16 +78,6 @@ services:
     labels:
       - "diun.enable=true"
 
-  # Private network
-  cloudflared:
-    image: cloudflare/cloudflared:2022.6.1
-    container_name: cloudflared
-    command: tunnel run
-    user: root
-    restart: always
-    volumes:
-      - "./cloudflared:/root/.cloudflared"
-
   # Netdata
   netdata:
     image: netdata/netdata:latest
