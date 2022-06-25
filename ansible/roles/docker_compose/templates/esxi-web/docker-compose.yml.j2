@@ -266,16 +266,6 @@ services:
     command:
       - "-nginx.scrape-uri=http://nginx:8080/stub_status"
 
-  # Private network
-  cloudflared:
-    image: cloudflare/cloudflared:latest
-    container_name: cloudflared
-    command: tunnel run
-    user: root
-    restart: always
-    volumes:
-      - "./cloudflared:/root/.cloudflared"
-
   # Netdata
   netdata:
     image: netdata/netdata:latest
