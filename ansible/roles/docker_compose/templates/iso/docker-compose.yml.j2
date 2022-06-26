@@ -17,6 +17,9 @@ services:
     ports:
       - "80:80"
       - "443:443"
+    mem_limit: 500m
+    mem_reservation: 200m
+    cpus: 2.0
     restart: always
 
   # Letsencrypt SSL certificates
@@ -27,6 +30,8 @@ services:
       - "./letsencrypt/etc:/etc/letsencrypt"
       - "./letsencrypt/var:/var/lib/letsencrypt"
     entrypoint: "/bin/sh -c 'trap exit TERM; sleep 10; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    mem_limit: 10m
+    cpus: 0.1
     restart: always
 
   # Centralized logging
@@ -43,7 +48,10 @@ services:
       DD_LOGS_ENABLED: {{ dd_logs_enabled }}
       DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL: {{ dd_logs_config_container_collect_all }}
       DD_PROCESS_AGENT_ENABLED: {{ dd_process_agent_enabled }}
-    restart: always
+    mem_limit: 300m
+    mem_reservation: 200m
+    cpus: 0.2
+    restart: on-failure:5
 
   # Garuda iso autobuilder
   garuda-iso-autobuild:
@@ -69,7 +77,6 @@ services:
     image: netdata/netdata:latest
     container_name: netdata
     hostname: garuda-iso
-    restart: always
     cap_add:
       - SYS_PTRACE
     security_opt:
@@ -78,14 +85,19 @@ services:
       - ./netdata/config:/etc/netdata
       - ./netdata/lib:/var/lib/netdata
       - ./netdata/cache:/var/cache/netdata
-      - /etc/passwd:/host/etc/passwd:ro
       - /etc/group:/host/etc/group:ro
+      - /etc/os-release:/host/etc/os-release:ro
+      - /etc/passwd:/host/etc/passwd:ro
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
-      - /etc/os-release:/host/etc/os-release:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
     environment:
       NETDATA_CLAIM_TOKEN: {{ netdata_claim_token }}
       NETDATA_CLAIM_URL: {{ netdata_claim_url }}
+    mem_limit: 300m
+    mem_reservation: 100m
+    cpus: 0.3
+    restart: on-failure:5
 
   # Deepfence
   deepfence_agent_ce:

@@ -10,6 +10,9 @@ services:
       - "./nginx/nginx.conf:/etc/nginx/nginx.conf:ro"
     ports:
       - "80:80"
+    mem_limit: 1g
+    mem_reservation: 200m
+    cpus: 6.0
     restart: always
 
   # Synchronizing all mirrors
@@ -27,6 +30,9 @@ services:
       PUID: {{ puid }}
       PGID: {{ pgid }}
       TZ: {{ tz }}
+    mem_limit: 1g
+    mem_reservation: 150m
+    cpus: 6.0
     restart: unless-stopped
 
   # Centralized logging
@@ -43,7 +49,10 @@ services:
       DD_LOGS_ENABLED: {{ dd_logs_enabled }}
       DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL:  {{ dd_logs_config_container_collect_all }}
       DD_PROCESS_AGENT_ENABLED: {{ dd_process_agent_enabled }}
-    restart: always
+    mem_limit: 300m
+    mem_reservation: 200m
+    cpus: 0.2
+    restart: on-failure:5
 
   # Private network
   cloudflared:
@@ -51,9 +60,12 @@ services:
     container_name: cloudflared
     command: tunnel run
     user: root
-    restart: always
     volumes:
       - "./cloudflared:/root/.cloudflared"
+    mem_limit: 50m
+    mem_reservation: 10m
+    cpus: 0.2
+    restart: always
 
   # Netdata
   netdata:
@@ -69,14 +81,18 @@ services:
       - ./netdata/config:/etc/netdata
       - ./netdata/lib:/var/lib/netdata
       - ./netdata/cache:/var/cache/netdata
-      - /etc/passwd:/host/etc/passwd:ro
       - /etc/group:/host/etc/group:ro
+      - /etc/os-release:/host/etc/os-release:ro
+      - /etc/passwd:/host/etc/passwd:ro
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
-      - /etc/os-release:/host/etc/os-release:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
     environment:
       NETDATA_CLAIM_TOKEN: {{ netdata_claim_token }}
       NETDATA_CLAIM_URL: {{ netdata_claim_url }}
+    mem_limit: 450m
+    mem_reservation: 100m
+    cpus: 0.3
 
   # Deepfence
   deepfence_agent_ce:
@@ -95,8 +111,7 @@ services:
       MGMT_CONSOLE_URL: {{ df_mgmt_console_url }}
       MGMT_CONSOLE_PORT: {{ df_mgmt_console_port }}
       DEEPFENCE_KEY: {{ df_key }}
-    mem_limit: 400m
+    mem_limit: 500m
     mem_reservation: 10m
     cpus: 0.2
     restart: on-failure:5
-    restart: on-failure

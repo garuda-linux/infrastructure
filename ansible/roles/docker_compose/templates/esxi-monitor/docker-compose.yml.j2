@@ -134,16 +134,18 @@ services:
     container_name: cloudflared
     command: tunnel run
     user: root
-    restart: always
     volumes:
       - "./cloudflared:/root/.cloudflared"
+    mem_limit: 50m
+    mem_reservation: 10m
+    cpus: 0.2
+    restart: always
 
   # Netdata
   netdata:
     image: netdata/netdata:latest
     container_name: netdata
     hostname: esxi-monitor
-    restart: always
     cap_add:
       - SYS_PTRACE
     security_opt:
@@ -152,14 +154,19 @@ services:
       - ./netdata/config:/etc/netdata
       - ./netdata/lib:/var/lib/netdata
       - ./netdata/cache:/var/cache/netdata
-      - /etc/passwd:/host/etc/passwd:ro
       - /etc/group:/host/etc/group:ro
+      - /etc/os-release:/host/etc/os-release:ro
+      - /etc/passwd:/host/etc/passwd:ro
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
-      - /etc/os-release:/host/etc/os-release:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
     environment:
       NETDATA_CLAIM_TOKEN: {{ netdata_claim_token }}
       NETDATA_CLAIM_URL: {{ netdata_claim_url }}
+    mem_limit: 300m
+    mem_reservation: 100m
+    cpus: 0.3
+    restart: on-failure:5
 
   # Deepfence
   deepfence_agent_ce:

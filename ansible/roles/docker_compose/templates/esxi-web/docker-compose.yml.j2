@@ -97,7 +97,7 @@ services:
     mem_limit: 300m
     mem_reservation: 200m
     cpus: 0.2
-    restart: always
+    restart: on-failure:5
     labels:
       - "diun.enable=true"
 
@@ -117,7 +117,7 @@ services:
       DIUN_WATCH_WORKERS: {{ diun_watch_workers }}
       LOG_JSON: {{ log_json }}
       LOG_LEVEL: {{ log_level }}
-    mem_limit: 30m
+    mem_limit: 40m
     cpus: 0.2
     restart: always
     labels:
@@ -142,7 +142,7 @@ services:
       - SETGID
       - SETUID
       - DAC_OVERRIDE
-    mem_limit: 1.5g
+    mem_limit: 1.8g
     mem_reservation: 500m
     cpus: 1.0
     restart: always
@@ -163,7 +163,7 @@ services:
     read_only: true
     cap_drop:
       - ALL
-    mem_limit: 10m
+    mem_limit: 20m
     cpus: 0.2
     restart: always
     labels:
@@ -181,7 +181,7 @@ services:
     read_only: true
     cap_drop:
       - ALL
-    mem_limit: 10m
+    mem_limit: 15m
     cpus: 0.2
     restart: always
     labels:
@@ -316,11 +316,12 @@ services:
       - ./netdata/config:/etc/netdata
       - ./netdata/lib:/var/lib/netdata
       - ./netdata/cache:/var/cache/netdata
-      - /etc/passwd:/host/etc/passwd:ro
       - /etc/group:/host/etc/group:ro
+      - /etc/os-release:/host/etc/os-release:ro
+      - /etc/passwd:/host/etc/passwd:ro
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
-      - /etc/os-release:/host/etc/os-release:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
     environment:
       NETDATA_CLAIM_TOKEN: {{ netdata_claim_token }}
       NETDATA_CLAIM_URL: {{ netdata_claim_url }}
