@@ -51,7 +51,7 @@ services:
       - "./letsencrypt/etc:/etc/letsencrypt"
       - "./letsencrypt/var:/var/lib/letsencrypt"
     entrypoint: "/bin/sh -c 'trap exit TERM; sleep 10; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
-    mem_limit: 10m
+    mem_limit: 25m
     cpus: 0.1
     restart: always
 
