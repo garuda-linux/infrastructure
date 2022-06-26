@@ -1,4 +1,4 @@
-version: "3.8"
+version: "3.9"
 services:
   # Webserver
   nginx:
@@ -96,6 +96,27 @@ services:
       NETDATA_CLAIM_TOKEN: {{ netdata_claim_token }}
       NETDATA_CLAIM_URL: {{ netdata_claim_url }}
 
+  # Deepfence
+  deepfence_agent_ce:
+    image: deepfenceio/deepfence_agent_ce:latest
+    container_name: deepfence-agent
+    pid: host
+    network_mode: host
+    privileged: true
+    volumes:
+      - "/sys/kernel/debug:/sys/kernel/debug:rw"
+      - "./deepfence/logs:/var/log/fenced"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "/:/fenced/mnt/host/:ro"
+    environment:
+      USER_DEFINED_TAGS: {{ df_user_defined_tags }}
+      MGMT_CONSOLE_URL: {{ df_mgmt_console_url }}
+      MGMT_CONSOLE_PORT: {{ df_mgmt_console_port }}
+      DEEPFENCE_KEY: {{ df_key }}
+    mem_limit: 400m
+    mem_reservation: 10m
+    cpus: 0.2
+    restart: on-failure:5
 
 # certbot init
 # sudo docker run -p 80:80 -p 443:443 -it --rm --name certbot \

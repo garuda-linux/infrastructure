@@ -249,7 +249,7 @@
   when: docker_compose | default(false) == true
 - name: Fix Netdata directory permissions
   file:
-    path:  /var/cache/garuda-{{ inventory_hostname }}/netdata
+    path: /var/cache/garuda-{{ inventory_hostname }}/netdata
     state: directory
     recurse: yes
     owner: 201

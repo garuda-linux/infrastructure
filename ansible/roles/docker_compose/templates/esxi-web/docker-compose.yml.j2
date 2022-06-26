@@ -1,4 +1,4 @@
-version: "3.8"
+version: "3.9"
 services:
   # Webserver - reverse proxying all the other containers
   nginx:
@@ -24,7 +24,12 @@ services:
       - 81:81
       - 443:443
       - 443:443/udp
+    mem_limit: 500m
+    mem_reservation: 200m
+    cpus: 2.0
     restart: always
+    labels:
+      - "diun.enable=true"
 
   # SSL certs
   certbot:
@@ -36,15 +41,16 @@ services:
     entrypoint: "/bin/sh -c 'trap exit TERM; sleep 10; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
     labels:
       - "diun.enable=true"
+    mem_limit: 10m
+    cpus: 0.1
     restart: always
+    labels:
+      - "diun.enable=true"
 
   # Whoogle search engine
   whoogle:
     image: benbusby/whoogle-search:latest
     container_name: whoogle
-    pids_limit: 50
-    mem_limit: 256mb
-    memswap_limit: 256mb
     user: whoogle
     security_opt:
       - no-new-privileges
@@ -65,6 +71,10 @@ services:
       WHOOGLE_CONFIG_URL: {{ whoogle_config_url }}
       WHOOGLE_CONFIG_VIEW_IMAGE: {{ whoogle_config_view_image }}
       WHOOGLE_RESULTS_PER_PAGE: {{ whoogle_results_per_page }}
+    pids_limit: 50
+    mem_limit: 256mb
+    memswap_limit: 256mb
+    cpus: 1.0
     restart: always
     labels:
       - "diun.enable=true"
@@ -84,6 +94,9 @@ services:
       DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL:
         {{ dd_logs_config_container_collect_all }}
       DD_PROCESS_AGENT_ENABLED: {{ dd_process_agent_enabled }}
+    mem_limit: 300m
+    mem_reservation: 200m
+    cpus: 0.2
     restart: always
     labels:
       - "diun.enable=true"
@@ -104,6 +117,8 @@ services:
       DIUN_WATCH_WORKERS: {{ diun_watch_workers }}
       LOG_JSON: {{ log_json }}
       LOG_LEVEL: {{ log_level }}
+    mem_limit: 30m
+    cpus: 0.2
     restart: always
     labels:
       - "diun.enable=true"
@@ -127,6 +142,9 @@ services:
       - SETGID
       - SETUID
       - DAC_OVERRIDE
+    mem_limit: 1.5g
+    mem_reservation: 500m
+    cpus: 1.0
     restart: always
     labels:
       - "diun.enable=true"
@@ -145,9 +163,11 @@ services:
     read_only: true
     cap_drop:
       - ALL
+    mem_limit: 10m
+    cpus: 0.2
+    restart: always
     labels:
       - "diun.enable=true"
-    restart: always
 
   filtron:
     image: dalf/filtron:latest
@@ -161,6 +181,8 @@ services:
     read_only: true
     cap_drop:
       - ALL
+    mem_limit: 10m
+    cpus: 0.2
     restart: always
     labels:
       - "diun.enable=true"
@@ -179,6 +201,9 @@ services:
       FF_SYNCSERVER_SECRET: {{ syncserver_secret }}
       FF_SYNCSERVER_SQLURI: {{ syncserver_sqluri }}
       TZ: {{ syncserver_tz }}
+    mem_limit: 100m
+    mem_reservation: 50m
+    cpus: 0.2
     restart: always
     labels:
       - "diun.enable=true"
@@ -189,6 +214,9 @@ services:
     container_name: thelounge
     volumes:
       - "./thelounge:/var/opt/thelounge"
+    mem_limit: 80m
+    mem_reservation: 30m
+    cpus: 0.2
     restart: always
     labels:
       - "diun.enable=true"
@@ -209,6 +237,9 @@ services:
       SMTP_USERNAME: {{ smtp_username }}
       SMTP_PASSWORD: {{ smtp_password }}
       DOMAIN: {{ domain }}
+    mem_limit: 80m
+    mem_reservation: 10m
+    cpus: 0.2
     restart: always
     labels:
       - "diun.enable=true"
@@ -220,6 +251,9 @@ services:
     volumes:
       - "./privatebin:/srv/data"
       - "./configs/privatebin.cfg.php:/srv/cfg/conf.php"
+    mem_limit: 80m
+    mem_reservation: 40m
+    cpus: 0.2
     restart: always
     labels:
       - "diun.enable=true"
@@ -230,6 +264,8 @@ services:
     container_name: homer
     volumes:
       - "./startpage:/www/assets"
+    mem_limit: 10m
+    cpus: 0.1
     restart: always
     labels:
       - "diun.enable=true"
@@ -243,7 +279,12 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: {{ mongo_initdb_root_username }}
       MONGO_INITDB_ROOT_PASSWORD: {{ mongo_initdb_root_password }}
+    mem_limit: 500m
+    mem_reservation: 150m
+    cpus: 2.0
     restart: always
+    labels:
+      - "diun.enable=true"
 
   # MongoDB admin interface
   mongo-express:
@@ -255,14 +296,18 @@ services:
       ME_CONFIG_MONGODB_ADMINUSERNAME: {{ me_config_mongodb_adminusername }}
       ME_CONFIG_MONGODB_ADMINPASSWORD: {{ me_config_mongodb_adminpassword }}
       ME_CONFIG_MONGODB_URL: {{ me_config_mongodb_url }}
-    restart: always
+    mem_limit: 100m
+    mem_reservation: 20m
+    cpus: 0.2
+    restart: on-failure:5
+    labels:
+      - "diun.enable=true"
 
   # Netdata
   netdata:
     image: netdata/netdata:latest
     container_name: netdata
     hostname: esxi-web
-    restart: unless-stopped
     cap_add:
       - SYS_PTRACE
     security_opt:
@@ -279,3 +324,33 @@ services:
     environment:
       NETDATA_CLAIM_TOKEN: {{ netdata_claim_token }}
       NETDATA_CLAIM_URL: {{ netdata_claim_url }}
+    mem_limit: 300m
+    mem_reservation: 100m
+    cpus: 0.3
+    restart: on-failure:5
+    labels:
+      - "diun.enable=true"
+
+  # Deepfence
+  deepfence_agent_ce:
+    image: deepfenceio/deepfence_agent_ce:latest
+    container_name: deepfence-agent
+    pid: host
+    network_mode: host
+    privileged: true
+    volumes:
+      - "/sys/kernel/debug:/sys/kernel/debug:rw"
+      - "./deepfence/logs:/var/log/fenced"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "/:/fenced/mnt/host/:ro"
+    environment:
+      USER_DEFINED_TAGS: {{ df_user_defined_tags }}
+      MGMT_CONSOLE_URL: {{ df_mgmt_console_url }}
+      MGMT_CONSOLE_PORT: {{ df_mgmt_console_port }}
+      DEEPFENCE_KEY: {{ df_key }}
+    mem_limit: 400m
+    mem_reservation: 10m
+    cpus: 0.2
+    restart: on-failure:5
+    labels:
+      - "diun.enable=true"
