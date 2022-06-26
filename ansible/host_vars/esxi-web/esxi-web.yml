@@ -27,11 +27,13 @@ log_json: false
 log_level: info
 
 # Firefox Syncserver
-ffsync_port: 5000
+syncserver_accesslog: true
 syncserver_batch_upload_enabled: true
-syncserver_force_wsgi_environ: false
-syncserver_public_url: http://ffsync.garudalinux.org
+syncserver_force_wsgi_environ: true
+syncserver_forwarded_ips: "*"
+syncserver_public_url: https://ffsync.garudalinux.org
 syncserver_sqluri: sqlite:////data/syncserver.db
+syncserver_tz: Europe/Berlin
 
 # Searxng
 letsencrypt_email: team@garudalinux.org

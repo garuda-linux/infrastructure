@@ -12,7 +12,6 @@ services:
       - "./nginx/logs/:/var/log/nginx:rw"
       - "./nginx/goaccess:/usr/share/nginx/html/logs:ro"
       - "./nginx/www:/usr/share/nginx/html/www:ro"
-      - "./nginx/crs-setup.conf:/usr/local/share/coreruleset/crs-setup.conf"
       - "./website:/usr/share/nginx/html/website:ro"
       - "./letsencrypt/etc:/etc/letsencrypt:ro"
     labels:
@@ -169,16 +168,17 @@ services:
   # Firefox syncserver
   syncserver:
     container_name: syncserver
-    image: mozilla/syncserver:latest
+    image: crazymax/firefox-syncserver:latest
     volumes:
-      - ./syncserver:/data
+      - "./syncserver:/data"
     environment:
-      PORT: {{ ffsync_port }}
-      SYNCSERVER_BATCH_UPLOAD_ENABLED: {{ syncserver_batch_upload_enabled }}
-      SYNCSERVER_FORCE_WSGI_ENVIRON: {{ syncserver_force_wsgi_environ }}
-      SYNCSERVER_PUBLIC_URL: {{ syncserver_public_url }}
-      SYNCSERVER_SECRET: {{ syncserver_secret }}
-      SYNCSERVER_SQLURI: {{ syncserver_sqluri }}
+      FF_SYNCSERVER_ACCESSLOG: {{ syncserver_accesslog }}
+      FF_SYNCSERVER_FORCE_WSGI_ENVIRON: {{ syncserver_force_wsgi_environ }}
+      FF_SYNCSERVER_FORWARDED_ALLOW_IPS: "{{  syncserver_forwarded_ips }}"
+      FF_SYNCSERVER_PUBLIC_URL: {{ syncserver_public_url }}
+      FF_SYNCSERVER_SECRET: {{ syncserver_secret }}
+      FF_SYNCSERVER_SQLURI: {{ syncserver_sqluri }}
+      TZ: {{ syncserver_tz }}
     restart: always
     labels:
       - "diun.enable=true"
@@ -256,15 +256,6 @@ services:
       ME_CONFIG_MONGODB_ADMINPASSWORD: {{ me_config_mongodb_adminpassword }}
       ME_CONFIG_MONGODB_URL: {{ me_config_mongodb_url }}
     restart: always
-
-  # Nginx stat scraping
-  nginx-prometheus-exporter:
-    image: nginx/nginx-prometheus-exporter:latest
-    container_name: nginx-prometheus-exporter
-    ports:
-      - 9113:9113
-    command:
-      - "-nginx.scrape-uri=http://nginx:8080/stub_status"
 
   # Netdata
   netdata:
