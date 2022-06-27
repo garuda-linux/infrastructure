@@ -97,7 +97,7 @@ services:
     mem_limit: 300m
     mem_reservation: 200m
     cpus: 0.2
-    restart: on-failure:5
+    restart: unless-stopped
     labels:
       - "diun.enable=true"
 
@@ -237,7 +237,7 @@ services:
       SMTP_USERNAME: {{ smtp_username }}
       SMTP_PASSWORD: {{ smtp_password }}
       DOMAIN: {{ domain }}
-    mem_limit: 150m
+    mem_limit: 250m
     mem_reservation: 10m
     cpus: 0.2
     restart: always
@@ -299,7 +299,7 @@ services:
     mem_limit: 100m
     mem_reservation: 20m
     cpus: 0.2
-    restart: on-failure:5
+    restart: unless-stopped
     labels:
       - "diun.enable=true"
 
@@ -325,10 +325,10 @@ services:
     environment:
       NETDATA_CLAIM_TOKEN: {{ netdata_claim_token }}
       NETDATA_CLAIM_URL: {{ netdata_claim_url }}
-    mem_limit: 300m
+    mem_limit: 400m
     mem_reservation: 100m
     cpus: 0.3
-    restart: on-failure:5
+    restart: unless-stopped
     labels:
       - "diun.enable=true"
 
@@ -352,6 +352,6 @@ services:
     mem_limit: 400m
     mem_reservation: 10m
     cpus: 0.2
-    restart: on-failure:5
+    restart: unless-stopped
     labels:
       - "diun.enable=true"

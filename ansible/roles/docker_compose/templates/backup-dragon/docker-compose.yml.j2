@@ -25,7 +25,7 @@ services:
     mem_limit: 300m
     mem_reservation: 100m
     cpus: 0.3
-    restart: on-failure:5
+    restart: unless-stopped
 
   # Deepfence
   deepfence_agent_ce:
@@ -47,5 +47,5 @@ services:
     mem_limit: 400m
     mem_reservation: 10m
     cpus: 0.2
-    restart: on-failure:5
+    restart: unless-stopped
 

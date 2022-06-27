@@ -51,7 +51,7 @@ services:
     mem_limit: 300m
     mem_reservation: 200m
     cpus: 0.2
-    restart: on-failure:5
+    restart: unless-stopped
 
   # Garuda iso autobuilder
   garuda-iso-autobuild:
@@ -97,7 +97,7 @@ services:
     mem_limit: 300m
     mem_reservation: 100m
     cpus: 0.3
-    restart: on-failure:5
+    restart: unless-stopped
 
   # Deepfence
   deepfence_agent_ce:
@@ -119,7 +119,7 @@ services:
     mem_limit: 400m
     mem_reservation: 10m
     cpus: 0.2
-    restart: on-failure:5
+    restart: unless-stopped
 
 # certbot init
 # sudo docker run -p 80:80 -p 443:443 -it --rm -v "/var/cache/garuda-iso/letsencrypt/etc:/etc/letsencrypt" -v "/var/cache/garuda-iso/letsencrypt/var:/var/lib/letsencrypt" certbot/certbot certonly --standalone --agree-tos -n -m "team@garudalinux.org" -d "iso.builds.garudalinux.org"
