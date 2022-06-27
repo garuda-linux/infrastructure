@@ -313,9 +313,10 @@ services:
     security_opt:
       - apparmor:unconfined
     volumes:
+      - ./netdata/cache:/var/cache/netdata
       - ./netdata/config:/etc/netdata
       - ./netdata/lib:/var/lib/netdata
-      - ./netdata/cache:/var/cache/netdata
+      - ./nginx/logs/:/var/log/nginx:ro
       - /etc/group:/host/etc/group:ro
       - /etc/os-release:/host/etc/os-release:ro
       - /etc/passwd:/host/etc/passwd:ro
