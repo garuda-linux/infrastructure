@@ -30,7 +30,7 @@ services:
       - "./letsencrypt/etc:/etc/letsencrypt"
       - "./letsencrypt/var:/var/lib/letsencrypt"
     entrypoint: "/bin/sh -c 'trap exit TERM; sleep 10; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
-    mem_limit: 10m
+    mem_limit: 50m
     cpus: 0.1
     restart: always
 
@@ -116,7 +116,7 @@ services:
       MGMT_CONSOLE_URL: {{ df_mgmt_console_url }}
       MGMT_CONSOLE_PORT: {{ df_mgmt_console_port }}
       DEEPFENCE_KEY: {{ df_key }}
-    mem_limit: 400m
+    mem_limit: 650m
     mem_reservation: 10m
     cpus: 0.2
     restart: unless-stopped
