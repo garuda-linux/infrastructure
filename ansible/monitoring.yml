@@ -1,5 +1,5 @@
 ---
-- hosts: monitoring
+- hosts: monitor
   gather_facts: no
   become: true
   tasks:

@@ -4,6 +4,8 @@ credentials-file: /root/.cloudflared/tunnel.json
 ingress:
   - hostname: monitor.garudalinux.net
     service: http://grafana:3000
+  - hostname: netdata.garudalinux.net
+    service: http://192.168.1.50:19999
   - service: http_status:404
 
 warp-routing:
