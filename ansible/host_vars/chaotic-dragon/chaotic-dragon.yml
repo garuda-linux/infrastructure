@@ -23,3 +23,7 @@ caur_sign_user_root: /root
 caur_telegram_tag: "@dr460nf1r3"
 caur_type: cluster
 caur_url: https://builds.garudalinux.org/repos/chaotic-aur/x86_64
+
+# Zerotier
+zerotier_member_description: chaotic-dragon
+zerotier_member_ip_assignments: ["10.241.0.5"]

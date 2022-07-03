@@ -70,7 +70,7 @@ services:
       DD_LOGS_ENABLED: {{ dd_logs_enabled }}
       DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL:  {{ dd_logs_config_container_collect_all }}
       DD_PROCESS_AGENT_ENABLED: {{ dd_process_agent_enabled }}
-    mem_limit: 300m
+    mem_limit: 500m
     mem_reservation: 100m
     cpus: 0.2
     restart: unless-stopped

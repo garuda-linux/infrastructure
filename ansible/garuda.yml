@@ -22,6 +22,9 @@
         name: borg_servers
       when: "'borg_servers' in group_names"
     - import_role:
+        name: zerotier
+      when: zerotier_member_description is defined
+    - import_role:
         name: monitoring
       when: "'monitor' in group_names"
     - import_role:

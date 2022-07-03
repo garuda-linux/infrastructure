@@ -1,0 +1,8 @@
+---
+- hosts: garuda,misc
+  gather_facts: yes
+  become: true
+  tasks:
+    - import_role:
+        name: zerotier
+      when: zerotier_member_ip_assignments is defined
