@@ -14,11 +14,6 @@ pgid: 1000
 puid: 1000
 tz: Europe/Berlin
 
-# Datadog
-dd_logs_config_container_collect_all: true
-dd_logs_enabled: true
-dd_process_agent_enabled: true
-
 # Diun
 diun_providers_docker: true
 diun_watch_schedule: "@hourly"
@@ -64,3 +59,7 @@ whoogle_results_per_page: 15
 # Zerotier
 zerotier_member_description: backup-dragon
 zerotier_member_ip_assignments: ["10.241.0.1"]
+
+# Netdata
+netdata_custom_config: true
+netdata_web_log: true

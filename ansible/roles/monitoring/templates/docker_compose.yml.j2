@@ -1,0 +1,72 @@
+version: "3.9"
+services:
+  # Netdata
+  netdata:
+    image: netdata/netdata:latest
+    container_name: netdata
+    hostname: {{ inventory_hostname }}
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - apparmor:unconfined
+    volumes:
+      - "./netdata/cache:/var/cache/netdata"
+      - "./netdata/config:/etc/netdata"
+      - "./netdata/lib:/var/lib/netdata"
+{% if netdata_web_log == true %}
+      - "/var/cache/garuda-{{ inventory_hostname }}/nginx/logs:/var/log/nginx:ro"
+{% endif %}
+      - "/etc/group:/host/etc/group:ro"
+      - "/etc/os-release:/host/etc/os-release:ro"
+      - "/etc/passwd:/host/etc/passwd:ro"
+      - "/proc:/host/proc:ro"
+      - "/sys:/host/sys:ro"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    environment:
+      NETDATA_CLAIM_TOKEN: {{ netdata_claim_token }}
+      NETDATA_CLAIM_URL: {{ netdata_claim_url }}
+    mem_limit: 700m
+    mem_reservation: 100m
+    cpus: 0.3
+    restart: unless-stopped
+
+  # Deepfence
+  deepfence_agent_ce:
+    image: deepfenceio/deepfence_agent_ce:latest
+    container_name: deepfence-agent
+    pid: host
+    network_mode: host
+    privileged: true
+    volumes:
+      - "/sys/kernel/debug:/sys/kernel/debug:rw"
+      - "./deepfence/logs:/var/log/fenced"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "/:/fenced/mnt/host/:ro"
+    environment:
+      USER_DEFINED_TAGS: {{ df_user_defined_tags }}
+      MGMT_CONSOLE_URL: {{ df_mgmt_console_url }}
+      MGMT_CONSOLE_PORT: {{ df_mgmt_console_port }}
+      DEEPFENCE_KEY: {{ df_key }}
+    mem_limit: 700m
+    mem_reservation: 10m
+    cpus: 0.2
+    restart: unless-stopped
+
+  # Centralized logging
+  datadoghq:
+    image: datadog/agent:latest
+    container_name: dd-agent
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "/proc/:/host/proc/:ro"
+      - "/sys/fs/cgroup/:/host/sys/fs/cgroup:ro"
+    environment:
+      DD_API_KEY: {{ dd_api_key }}
+      DD_SITE: {{ dd_site }}
+      DD_LOGS_ENABLED: {{ dd_logs_enabled }}
+      DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL:  {{ dd_logs_config_container_collect_all }}
+      DD_PROCESS_AGENT_ENABLED: {{ dd_process_agent_enabled }}
+    mem_limit: 300m
+    mem_reservation: 100m
+    cpus: 0.2
+    restart: unless-stopped

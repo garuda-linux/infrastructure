@@ -30,12 +30,16 @@ chaotic-dragon
 esxi-repo
 
 [monitor]
-esxi-web
+backup-dragon
+build
+chaotic-dragon
 esxi-cloud
+esxi-monitor
+esxi-repo
+esxi-web
+exsi-iso
+iso
+web
 
 [misc]
 garuda-forum
-
-[mirrors]
-#ch-mirror
-#sg-mirror

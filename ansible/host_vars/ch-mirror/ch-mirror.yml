@@ -1,4 +1,0 @@
-# Base values
-ansible_host: 140.238.171.197
-docker_compose: true
-letsencrypt_domain: "ch-mirror.garudalinux.org"

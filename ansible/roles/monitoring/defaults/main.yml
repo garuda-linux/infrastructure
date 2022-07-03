@@ -1,0 +1,7 @@
+#netdata_stream_parent_ip:
+#netdata_stream_token:
+netdata_child: true
+netdata_custom_config: false
+netdata_disk_space: 1024
+netdata_parent: false
+netdata_web_log: false

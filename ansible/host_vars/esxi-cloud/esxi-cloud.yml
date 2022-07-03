@@ -18,11 +18,6 @@ diun_watch_workers: 20
 log_json: false
 log_level: info
 
-# Datadog
-dd_logs_enabled: true
-dd_logs_config_container_collect_all: true
-dd_process_agent_enabled: true
-
 # Zerotier
 zerotier_member_description: esxi-cloud
 zerotier_member_ip_assignments: ["10.241.0.11"]

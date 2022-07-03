@@ -1,0 +1,53 @@
+- name: Create directory for docker-compose monitoring stack
+  file:
+    path: /var/cache/monitoring
+    state: directory
+- name: Install docker-compose files
+  template:
+    dest: /var/cache/monitoring/docker-compose.yml
+    group: root
+    mode: 0644
+    owner: root
+    src: docker_compose.yml.j2
+- name: Copy static configurations to target directory
+  copy:
+    src: "{{ inventory_hostname }}/netdata"
+    dest: /var/cache/monitoring/
+    follow: yes
+  when: netdata_custom_config | default(false) == true
+- name: Run docker-compose up -d
+  shell: docker-compose up -d --remove-orphans
+  args:
+    chdir: /var/cache/monitoring
+- name: Install Netdata configuration files
+  template:
+    dest: /var/cache/monitoring/netdata/config/{{ item }}
+    group: 201
+    owner: 201
+    src: "{{ item }}.j2"
+  loop:
+    - health_alarm_notify.conf
+    - netdata.conf
+- name: Install streaming configuration to child nodes
+  template:
+    dest: /var/cache/monitoring/netdata/config/stream.conf
+    group: 201
+    owner: 201
+    src: stream_child.conf.j2
+  when: netdata_child | default(false) == true
+- name: Install streaming configuration for parent nodes
+  template:
+    dest: /var/cache/monitoring/netdata/config/stream.conf
+    group: 201
+    owner: 201
+    src: stream_parent.conf.j2
+  when: netdata_parent | default(false) == true
+- name: Fix Netdata directory permissions
+  file:
+    path: /var/cache/monitoring/netdata
+    state: directory
+    recurse: yes
+    owner: 201
+    group: 201
+- name: Restart Netdata to apply configuration changes
+  shell: docker restart netdata

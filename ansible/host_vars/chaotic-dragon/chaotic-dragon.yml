@@ -10,11 +10,6 @@ puid: 1000
 pgid: 1000
 tz: Europe/Berlin
 
-# Datadog
-dd_logs_enabled: true
-dd_logs_config_container_collect_all: true
-dd_process_agent_enabled: true
-
 # Toolbox
 caur_cluster_name: dragon-cluster
 caur_deploy_label: "Chaotic Dragon 🐉"

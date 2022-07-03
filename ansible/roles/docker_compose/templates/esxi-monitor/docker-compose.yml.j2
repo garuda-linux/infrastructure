@@ -141,55 +141,6 @@ services:
     cpus: 0.2
     restart: always
 
-  # Netdata
-  netdata:
-    image: netdata/netdata:latest
-    container_name: netdata
-    hostname: esxi-monitor
-    cap_add:
-      - SYS_PTRACE
-    security_opt:
-      - apparmor:unconfined
-    volumes:
-      - ./netdata/config:/etc/netdata
-      - ./netdata/lib:/var/lib/netdata
-      - ./netdata/cache:/var/cache/netdata
-      - /etc/group:/host/etc/group:ro
-      - /etc/os-release:/host/etc/os-release:ro
-      - /etc/passwd:/host/etc/passwd:ro
-      - /proc:/host/proc:ro
-      - /sys:/host/sys:ro
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-    environment:
-      NETDATA_CLAIM_TOKEN: {{ netdata_claim_token }}
-      NETDATA_CLAIM_URL: {{ netdata_claim_url }}
-    mem_limit: 300m
-    mem_reservation: 100m
-    cpus: 0.3
-    restart: unless-stopped
-
-  # Deepfence
-  deepfence_agent_ce:
-    image: deepfenceio/deepfence_agent_ce:latest
-    container_name: deepfence-agent
-    pid: host
-    network_mode: host
-    privileged: true
-    volumes:
-      - "/sys/kernel/debug:/sys/kernel/debug:rw"
-      - "./deepfence/logs:/var/log/fenced"
-      - "/var/run/docker.sock:/var/run/docker.sock"
-      - "/:/fenced/mnt/host/:ro"
-    environment:
-      USER_DEFINED_TAGS: {{ df_user_defined_tags }}
-      MGMT_CONSOLE_URL: {{ df_mgmt_console_url }}
-      MGMT_CONSOLE_PORT: {{ df_mgmt_console_port }}
-      DEEPFENCE_KEY: {{ df_key }}
-    mem_limit: 400m
-    mem_reservation: 10m
-    cpus: 0.2
-    restart: unless-stopped
-
 networks:
   monitor-net:
     driver: bridge

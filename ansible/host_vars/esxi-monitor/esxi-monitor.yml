@@ -8,3 +8,6 @@ docker_compose: true
 # Zerotier
 zerotier_member_description: esxi-monitor
 zerotier_member_ip_assignments: ["10.241.0.10"]
+
+# Netdata
+netdata_parent: true

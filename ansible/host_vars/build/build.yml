@@ -11,11 +11,6 @@ puid: 1000
 pgid: 1000
 tz: Europe/Berlin
 
-# Datadog
-dd_logs_enabled: true
-dd_logs_config_container_collect_all: true
-dd_process_agent_enabled: true
-
 # Toolbox
 caur_cluster_name: garuda-cluster
 caur_deploy_label: "Temeraire 🐉"
@@ -40,3 +35,7 @@ ssh_listen_to: ["0.0.0.0", "::"]
 # Zerotier
 zerotier_member_description: garuda-build
 zerotier_member_ip_assignments: ["10.241.0.2"]
+
+# Netdata
+netdata_custom_config: true
+netdata_web_log: true

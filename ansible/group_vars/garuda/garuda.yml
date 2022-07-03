@@ -1,1 +1,10 @@
+# Netdata
+netdata_stream_parent_ip: 10.241.0.10
+
+# Zerotier
 zerotier_register_short_hostname: true
+
+# Datadog
+dd_logs_enabled: true
+dd_logs_config_container_collect_all: true
+dd_process_agent_enabled: true
