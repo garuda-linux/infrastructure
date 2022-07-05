@@ -14,15 +14,7 @@
     force: yes
     repo: https://github.com/chaotic-aur/toolbox.git
     single_branch: yes
-  when: '"build" in inventory_hostname or "chaotic_builder" in inventory_hostname'
-- name: Update the Garuda adapted Chaotic-AUR toolbox for our repo
-  git:
-    depth: 1
-    dest: /var/cache/garuda-{{ inventory_hostname | lower }}/toolbox
-    force: yes
-    repo: https://gitlab.com/garuda-linux/tools/toolbox.git
-    single_branch: yes
-  when: '"repo" in inventory_hostname'
+  when: '"build" in inventory_hostname or "chaotic_builder" in inventory_hostname or "repo" in inventory_hostname'
 - name: Install changed toolbox files
   shell: make install
   args:
