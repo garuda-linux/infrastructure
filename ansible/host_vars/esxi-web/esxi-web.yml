@@ -14,13 +14,6 @@ pgid: 1000
 puid: 1000
 tz: Europe/Berlin
 
-# Diun
-diun_providers_docker: true
-diun_watch_schedule: "@hourly"
-diun_watch_workers: 20
-log_json: false
-log_level: info
-
 # Firefox Syncserver
 syncserver_accesslog: true
 syncserver_batch_upload_enabled: true

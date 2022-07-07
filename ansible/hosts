@@ -8,6 +8,7 @@ backup-dragon
 build
 chaotic-dragon
 esxi-cloud
+esxi-forum
 esxi-monitor
 esxi-repo
 esxi-web
@@ -18,6 +19,7 @@ web
 
 [borg_clients]
 esxi-cloud
+esxi-forum
 esxi-web
 web
 
@@ -34,11 +36,9 @@ backup-dragon
 build
 chaotic-dragon
 esxi-cloud
+esxi-forum
 esxi-monitor
 esxi-repo
 esxi-web
 iso
 web
-
-[misc]
-garuda-forum

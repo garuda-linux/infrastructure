@@ -1,4 +1,5 @@
 .env*
 ansible/library/*
 ansible/misc/*
+ansible/roles/zerotier/*
 config.json*

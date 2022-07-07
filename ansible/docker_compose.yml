@@ -1,5 +1,5 @@
 ---
-- hosts: garuda,misc
+- hosts: garuda
   gather_facts: no
   become: true
   tasks:

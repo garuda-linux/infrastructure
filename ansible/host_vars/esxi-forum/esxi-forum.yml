@@ -1,0 +1,9 @@
+# Base values
+actual_hostname: esxi-forum
+ansible_host: 65.108.140.36
+ansible_port: 227
+borg_dir: /var/discourse/shared/standalone/backups/default/
+
+# Zerotier
+zerotier_member_description: esxi-forum
+zerotier_member_ip_assignments: ["10.241.0.12"]

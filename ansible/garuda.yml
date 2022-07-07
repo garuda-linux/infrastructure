@@ -1,6 +1,6 @@
 ---
 - hosts: garuda
-  gather_facts: no
+  gather_facts: yes
   become: true
   tasks:
     - name: Copy authorized_keys
