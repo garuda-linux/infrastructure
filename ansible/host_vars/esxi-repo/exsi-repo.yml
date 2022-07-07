@@ -7,15 +7,17 @@ docker_compose: true
 
 # Toolbox
 caur_cluster_name: garuda-repo
-caur_deploy_label: "Maximus 🐉"
-caur_packager: "Garuda Builder <team@garudalinux.org>"
+caur_db_name: garuda
+caur_deploy_label: '"Maximus 🐉"'
+caur_lower_pkgs: chaotic-mirrorlist
+caur_packager: '"Garuda Builder <team@garudalinux.org>"'
 caur_primary: true
 caur_routines: "/var/cache/chaotic/routines"
 caur_sign_key: 0706B90D37D9B881
 caur_sign_realname: "Nico Jensch"
 caur_sign_user: nico
 caur_sign_user_home: /root
-caur_telegram_tag: "@dr460nf1r3"
+caur_telegram_tag: '"@dr460nf1r3"'
 caur_type: primary
 repoctl_config: /root/.config/repoctl/config.toml
 
