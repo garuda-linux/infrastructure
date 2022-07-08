@@ -16,11 +16,16 @@
         autoclean: yes
       when:
         - ansible_facts['distribution'] == "Ubuntu"
-    - name: Update docker-compose stack
+    - name: Update web docker-compose stack
       shell: docker-compose pull --ignore-pull-failures && docker-compose build --no-cache --pull && docker-compose up -d --force-recreate
       args:
         chdir: /var/cache/{{ 'chaotic-mirror' if 'mirrors' in group_names else 'garuda-' + (inventory_hostname | lower) }}
       when: docker_compose | default(false) == true
+    - name: Update monitoring docker-compose stack
+      shell: docker-compose pull --ignore-pull-failures && docker-compose up -d --force-recreate
+      args:
+        chdir: /var/cache/monitoring
+      when: inventory_hostname in groups["monitoring"]
     - name: Prune unused Docker resources
       shell: docker system prune -fa
       when: docker_compose | default(false) == true

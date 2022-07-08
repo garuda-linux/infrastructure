@@ -64,5 +64,11 @@
     recurse: yes
     owner: 201
     group: 201
+- name: Update monitoring docker-compose stack
+  shell: docker-compose pull --ignore-pull-failures && docker-compose up -d --force-recreate
+  args:
+    chdir: /var/cache/monitoring
+- name: Prune unused Docker resources
+  shell: docker system prune -fa
 - name: Restart Netdata to apply configuration changes
   shell: docker restart netdata
