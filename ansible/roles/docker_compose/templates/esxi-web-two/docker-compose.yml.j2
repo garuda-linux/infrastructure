@@ -1,0 +1,55 @@
+services:
+  # Reddit frontend
+  libreddit:
+    image: spikecodes/libreddit:latest
+    container_name: libreddit
+    environment:
+      LIBREDDIT_DEFAULT_AUTOPLAY_VIDEOS: {{ libreddit_default_autoplay_videos }}
+      LIBREDDIT_DEFAULT_FRONT_PAGE: {{ libreddit_default_front_page }}
+      LIBREDDIT_DEFAULT_SHOW_NSFW: {{ libreddit_default_show_nsfw }}
+      LIBREDDIT_DEFAULT_THEME: {{ libreddit_default_theme }}
+      LIBREDDIT_DEFAULT_USE_HLS: {{ libreddit_default_use_hls }}
+    restart: on-failure:5
+    labels:
+      - "diun.enable=true"
+
+  # Twitter frontend
+  nitter:
+    image: zedeus/nitter:latest
+    container_name: nitter
+    restart: on-failure:5
+    depends_on:
+      - nitter_redis
+    volumes:
+      - ./nitter.conf:/src/nitter.conf
+    labels:
+      - "diun.enable=true"
+
+  nitter_redis:
+    image: redis:6-alpine
+    container_name: nitter_redis
+    restart: on-failure:5
+    labels:
+      - "diun.enable=true"
+
+  # Bibliogram
+  bibliogram:
+    image: quay.io/pussthecatorg/bibliogram:latest
+    container_name: bibliogram
+    restart: on-failure:5
+    mem_limit: 256mb
+    memswap_limit: 256mb
+    volumes:
+      - "./bibliogram/config.js:/app/config.js"
+      - "./bibliogram/db:/app/db"
+
+  # Lingva
+  lingva:
+    image: thedaviddelta/lingva-translate:latest
+    container_name: lingva
+    restart: on-failure:5
+    environment:
+      dark_theme: true
+      default_source_lang: auto
+      default_target_lang: en
+      site_domain: translate.dr460nf1r3.org

@@ -1,0 +1,10 @@
+# Base values
+actual_hostname: esxi-web-two
+ansible_host: 65.108.140.36
+ansible_port: 228
+borg_dir: /var/cache/garuda-esxi-web-two
+docker_compose: true
+
+# Zerotier
+zerotier_member_description: backup-dragon
+zerotier_member_ip_assignments: ["10.241.0.13"]

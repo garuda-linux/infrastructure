@@ -9,10 +9,11 @@ build
 chaotic-dragon
 esxi-cloud
 esxi-forum
+esxi-iso
 esxi-monitor
 esxi-repo
 esxi-web
-exsi-iso
+esxi-web-two
 iso
 sec
 web
@@ -21,6 +22,7 @@ web
 esxi-cloud
 esxi-forum
 esxi-web
+esxi-web-two
 web
 
 [borg_servers]
@@ -40,5 +42,6 @@ esxi-forum
 esxi-monitor
 esxi-repo
 esxi-web
+esxi-web-two
 iso
 web

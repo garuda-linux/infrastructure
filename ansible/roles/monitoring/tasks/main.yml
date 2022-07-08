@@ -19,24 +19,28 @@
   shell: docker-compose up -d --remove-orphans
   args:
     chdir: /var/cache/monitoring
-- name: Install Netdata configuration files for children
-  template:
-    dest: /var/cache/monitoring/netdata/config/{{ item }}
-    group: 201
-    owner: 201
-    src: "{{ item }}.j2"
-  loop:
-    - health_alarm_notify.conf
-    - netdata_child.conf
-  when: netdata_child | default(false) == true
-- name: Install Netdata configuration files for parents
+- name: Install Netdata configuration files for children 1/2
   template:
     dest: /var/cache/monitoring/netdata/config/health_alarm_notify.conf
     group: 201
     owner: 201
     src: health_alarm_notify.conf.j2
   when: netdata_parent | default(false) == true
-- name: Install Netdata configuration files for parents
+- name: Install Netdata configuration files for children 2/2
+  template:
+    dest: /var/cache/monitoring/netdata/config/netdata.conf
+    group: 201
+    owner: 201
+    src: netdata_child.conf.j2
+  when: netdata_parent | default(false) == true
+- name: Install Netdata configuration files for parents 1/2
+  template:
+    dest: /var/cache/monitoring/netdata/config/health_alarm_notify.conf
+    group: 201
+    owner: 201
+    src: health_alarm_notify.conf.j2
+  when: netdata_parent | default(false) == true
+- name: Install Netdata configuration files for parents 2/2
   template:
     dest: /var/cache/monitoring/netdata/config/netdata.conf
     group: 201
