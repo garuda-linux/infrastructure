@@ -25,14 +25,14 @@
     group: 201
     owner: 201
     src: health_alarm_notify.conf.j2
-  when: netdata_parent | default(false) == true
+  when: netdata_child | default(false) == true
 - name: Install Netdata configuration files for children 2/2
   template:
     dest: /var/cache/monitoring/netdata/config/netdata.conf
     group: 201
     owner: 201
     src: netdata_child.conf.j2
-  when: netdata_parent | default(false) == true
+  when: netdata_child | default(false) == true
 - name: Install Netdata configuration files for parents 1/2
   template:
     dest: /var/cache/monitoring/netdata/config/health_alarm_notify.conf
