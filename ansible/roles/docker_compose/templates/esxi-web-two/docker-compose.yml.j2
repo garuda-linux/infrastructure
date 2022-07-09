@@ -108,3 +108,54 @@ services:
     environment:
       REDIS_REPLICATION_MODE: master
     restart: always
+
+  invidious:
+    image: quay.io/invidious/invidious:latest
+    container_name: invidious
+    environment:
+      INVIDIOUS_CONFIG: |
+        db:
+          dbname: {{ invidious_db }}
+          user: {{ invidious_db_user }}
+          password: {{ invidious_db_password }}
+          host: {{ invidious_db_host }}
+          port: 5432
+        check_tables: true
+        default_user_preferences:
+          local: true
+          quality: dash
+        disable_proxy: ["livestreams","downloads"]
+        use_quic: true
+        admins: ["nico"]
+        https_only: true
+        use_pubsub_feeds: true
+        popular_enabled: true
+        hmac_key: {{ invidious_hmac_key }}
+        domain: invidious.garudalinux.org
+        statistics_enabled: true
+        captcha_key: {{ invidious_captcha_key }}
+    ports:
+      - "3001:3000"
+    healthcheck:
+      test: wget -nv --tries=1 --spider http://127.0.0.1:3000/api/v1/comments/jNQXAC9IVRw || exit 1
+      interval: 30s
+      timeout: 5s
+      retries: 2
+    restart: always
+    depends_on:
+      - invidious_db
+
+  invidious_db:
+    image: docker.io/library/postgres:14
+    container_name: invidious_db
+    volumes:
+      - ./invidious/db:/var/lib/postgresql/data
+      - ./invidious/config:/config/sql
+      - ./invidious/init-invidious-db.sh:/docker-entrypoint-initdb.d/init-invidious-db.sh
+    environment:
+      POSTGRES_DB: {{ invidious_db }}
+      POSTGRES_USER: {{ invidious_db_user }}
+      POSTGRES_PASSWORD: {{ invidious_db_password }}
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
