@@ -68,12 +68,10 @@ services:
     image: thedaviddelta/lingva-translate:latest
     container_name: lingva
     environment:
-      dark_theme: {{ lingva_dark_theme }}
-      default_source_lang: {{ lingva_source_lang }}
-      default_target_lang: {{ lingva_target_lang }}
-      site_domain: {{ lingva_site_domain }}
-    mem_limit: 256m
-    memswap_limit: 256m
+      DARK_THEME: {{ lingva_dark_theme }}
+      DEFAULT_SOURCE_LANG: {{ lingva_source_lang }}
+      DEFAULT_TARGET_LANG: {{ lingva_target_lang }}
+      SITE_DOMAIN: {{ lingva_site_domain }}
     ports:
       - "3000:3000"
     restart: always
