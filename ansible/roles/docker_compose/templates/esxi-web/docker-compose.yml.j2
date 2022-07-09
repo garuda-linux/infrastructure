@@ -41,7 +41,7 @@ services:
     entrypoint: "/bin/sh -c 'trap exit TERM; sleep 10; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
     labels:
       - "diun.enable=true"
-    mem_limit: 25m
+    mem_limit: 50m
     cpus: 0.1
     restart: always
     labels:

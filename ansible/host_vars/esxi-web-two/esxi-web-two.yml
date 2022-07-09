@@ -8,3 +8,22 @@ docker_compose: true
 # Zerotier
 zerotier_member_description: backup-dragon
 zerotier_member_ip_assignments: ["10.241.0.13"]
+
+# libreddit
+libreddit_default_autoplay_videos: on
+libreddit_default_front_page: popular
+libreddit_default_show_nsfw: on
+libreddit_default_theme: dracula
+libreddit_default_use_hls: on
+
+# Lingva
+lingva_dark_theme: true
+lingva_site_domain: lingva.garudalinux.org
+lingva_source_lang: auto
+lingva_target_lang: en
+
+# Teddit
+teddit_domain: teddit.garudalinux.org
+teddit_redis_host: teddit_redis
+teddit_theme: dark
+teddit_trust_proxy: true

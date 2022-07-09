@@ -9,47 +9,104 @@ services:
       LIBREDDIT_DEFAULT_SHOW_NSFW: {{ libreddit_default_show_nsfw }}
       LIBREDDIT_DEFAULT_THEME: {{ libreddit_default_theme }}
       LIBREDDIT_DEFAULT_USE_HLS: {{ libreddit_default_use_hls }}
-    restart: on-failure:5
-    labels:
-      - "diun.enable=true"
+    ports:
+      - "8080:8080"
+    mem_limit: 256m
+    memswap_limit: 256m
+    restart: always
 
   # Twitter frontend
   nitter:
     image: zedeus/nitter:latest
     container_name: nitter
-    restart: on-failure:5
+    volumes:
+      - ./nitter/nitter.conf:/src/nitter.conf:ro
+    mem_limit: 256m
+    memswap_limit: 256m
+    ports:
+      - "8888:8888"
     depends_on:
       - nitter_redis
-    volumes:
-      - ./nitter.conf:/src/nitter.conf
-    labels:
-      - "diun.enable=true"
+    restart: always
+    healthcheck:
+      test: wget -nv --tries=1 --spider http://127.0.0.1:8080/Jack/status/20 || exit 1
+      interval: 30s
+      timeout: 5s
+      retries: 2
 
   nitter_redis:
     image: redis:6-alpine
     container_name: nitter_redis
-    restart: on-failure:5
-    labels:
-      - "diun.enable=true"
+    command: redis-server --save 60 1 --loglevel warning
+    volumes:
+      - ./nitter/redis:/data
+    mem_limit: 256m
+    memswap_limit: 256m
+    restart: always
+    healthcheck:
+      test: redis-cli ping
+      interval: 30s
+      timeout: 5s
+      retries: 2
 
   # Bibliogram
   bibliogram:
     image: quay.io/pussthecatorg/bibliogram:latest
     container_name: bibliogram
-    restart: on-failure:5
-    mem_limit: 256mb
-    memswap_limit: 256mb
     volumes:
-      - "./bibliogram/config.js:/app/config.js"
+     # - "./bibliogram/config.js:/app/config.js"
       - "./bibliogram/db:/app/db"
+    mem_limit: 256m
+    memswap_limit: 256m
+    ports:
+      - "10407:10407"
+    restart: always
+
 
   # Lingva
   lingva:
     image: thedaviddelta/lingva-translate:latest
     container_name: lingva
-    restart: on-failure:5
     environment:
-      dark_theme: true
-      default_source_lang: auto
-      default_target_lang: en
-      site_domain: translate.dr460nf1r3.org
+      dark_theme: {{ lingva_dark_theme }}
+      default_source_lang: {{ lingva_source_lang }}
+      default_target_lang: {{ lingva_target_lang }}
+      site_domain: {{ lingva_site_domain }}
+    mem_limit: 256m
+    memswap_limit: 256m
+    ports:
+      - "3000:3000"
+    restart: always
+
+  # Teddit
+  teddit:
+    image: teddit/teddit:latest
+    container_name: teddit
+    environment:
+      REDIS_HOST: teddit_redis
+    ports:
+      - "8081:8080"
+    mem_limit: 256m
+    memswap_limit: 256m
+    healthcheck:
+      test: ["CMD", "wget" ,"--no-verbose", "--tries=1", "--spider", "http://localhost:8080/about"]
+      interval: 1m
+      timeout: 3s
+    environment:
+      DOMAIN: {{ teddit_domain }}
+      REDIS_HOST: {{ teddit_redis_host }}
+      THEME: {{ teddit_theme }}
+      TRUST_PROXY: {{ teddit_trust_proxy }}
+    depends_on:
+      - teddit_redis
+    restart: always
+
+  teddit_redis:
+    image: redis:6.2.5-alpine
+    container_name: teddit_redis
+    command: redis-server
+    mem_limit: 256m
+    memswap_limit: 256m
+    environment:
+      REDIS_REPLICATION_MODE: master
+    restart: always
