@@ -19,6 +19,10 @@ Hello and welcome to the repo managing our infrastructure. Lets have a look at h
 - For a complete server setup, the `full-run.yml` playbook should be used
 - Updating all systems & rebooting them can be done by running the `system-update.yml` and `reboot.yml` playbooks
 
+## Infra structure
+
+<img src="https://gitlab.com/garuda-linux/infrastructure/-/raw/main/Infra.png" alt="Infra structure">
+
 ### Common
 
 - Sets up everything needed for on all servers, eg. Pacman configurations, `motd` or `systemd-oomd`
