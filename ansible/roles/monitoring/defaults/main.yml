@@ -2,7 +2,6 @@
 #netdata_stream_token:
 netdata_child: true
 netdata_custom_config: false
-netdata_disk_space_child: 1024
 netdata_disk_space_parent: 40960
 netdata_page_cache_size: 32
 netdata_parent: false

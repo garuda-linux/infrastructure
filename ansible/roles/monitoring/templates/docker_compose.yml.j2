@@ -21,27 +21,31 @@ services:
       - "/etc/passwd:/host/etc/passwd:ro"
       - "/proc:/host/proc:ro"
       - "/sys:/host/sys:ro"
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
 {% if netdata_parent == true %}
     ports:
       - 19999:19999
 {% endif %}
     environment:
+      DOCKER_HOST: docker_socket_proxy:2375
       NETDATA_CLAIM_TOKEN: {{ netdata_claim_token }}
       NETDATA_CLAIM_URL: {{ netdata_claim_url }}
 {% if netdata_parent == true %}
-    mem_limit: 1400m
+    mem_limit: 3072m
 {% else %}
     mem_limit: 700m
 {% endif %}
     mem_reservation: 100m
-    cpus: 0.3
+{% if netdata_parent == true %}
+    cpus: 4.0
+{% else %}
+    cpus: 0.5
+{% endif %}
     restart: unless-stopped
 
   # Deepfence
-  deepfence_agent_ce:
+  deepfence_agent:
     image: deepfenceio/deepfence_agent_ce:latest
-    container_name: deepfence-agent
+    container_name: deepfence_agent
     pid: host
     network_mode: host
     privileged: true
@@ -51,19 +55,19 @@ services:
       - "/var/run/docker.sock:/var/run/docker.sock"
       - "/:/fenced/mnt/host/:ro"
     environment:
-      USER_DEFINED_TAGS: {{ df_user_defined_tags }}
-      MGMT_CONSOLE_URL: {{ df_mgmt_console_url }}
-      MGMT_CONSOLE_PORT: {{ df_mgmt_console_port }}
       DEEPFENCE_KEY: {{ df_key }}
-    mem_limit: 700m
+      MGMT_CONSOLE_PORT: {{ df_mgmt_console_port }}
+      MGMT_CONSOLE_URL: {{ df_mgmt_console_url }}
+      USER_DEFINED_TAGS: {{ df_user_defined_tags }}
+    mem_limit: 1024m
     mem_reservation: 10m
     cpus: 0.2
     restart: unless-stopped
 
   # Centralized logging
-  datadoghq:
+  datadog_agent:
     image: datadog/agent:latest
-    container_name: dd-agent
+    container_name: datadog_agent
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
       - "/proc/:/host/proc/:ro"
@@ -78,3 +82,16 @@ services:
     mem_reservation: 100m
     cpus: 0.2
     restart: unless-stopped
+
+  # Docker socket proxy
+  docker_socket_proxy:
+    image: tecnativa/docker-socket-proxy:latest
+    container_name: docker_socket_proxy
+    volumes:
+     - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    environment:
+      - CONTAINERS=1
+    mem_limit: 50m
+    mem_reservation: 10m
+    cpus: 0.2
+    restart: always
