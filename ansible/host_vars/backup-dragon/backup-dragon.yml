@@ -6,3 +6,6 @@ ansible_port: 4200
 # Zerotier
 zerotier_member_description: backup-dragon
 zerotier_member_ip_assignments: ["10.241.0.6"]
+
+# Netdata
+netdata_custom_config: true

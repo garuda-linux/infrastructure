@@ -2,7 +2,6 @@
 - hosts:
     - chaotic_aur
     - garuda
-    - misc
   become: yes
   gather_facts: yes
   ignore_errors: yes
