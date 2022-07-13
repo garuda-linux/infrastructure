@@ -3,6 +3,8 @@ services:
   # Nginx proxy manager
   app:
     image: jc21/nginx-proxy-manager:latest
+    depends_on:
+      - db
     restart: always
     ports:
       - "80:80"
@@ -30,7 +32,7 @@ services:
     image: requarks/wiki:latest
     container_name: wikijs_app
     depends_on:
-      - wikijs_db
+      - postgres
     volumes:
       - "./wikijs/assets:/wiki/assets/favicons"
     environment:
@@ -56,6 +58,8 @@ services:
   matomo_app:
     image: matomo:latest
     container_name: matomo_app
+    depends_on:
+      - matomo_db
     restart: always
     volumes:
       - "./matomo/config:/var/www/html/config"
@@ -75,6 +79,8 @@ services:
   matrix:
     image: matrixdotorg/synapse:latest
     container_name: matrix
+    depends_on:
+      - postgres
     restart: always
     volumes:
       - "./matrix/matrix:/data"
@@ -85,6 +91,8 @@ services:
   matrix_web:
     image: vectorim/element-web
     container_name: element_web
+    depends_on:
+      - matrix
     volumes:
       - "./matrix/element_web/config.json:/app/config.json"
     restart: always
@@ -92,10 +100,15 @@ services:
   matrix_admin:
     image: awesometechnologies/synapse-admin:latest
     container_name: matrix_admin
+    depends_on:
+      - matrix
     restart: unless-stopped
 
   matterbridge:
     image: 42wim/matterbridge:stable
+    container_name: matterbridge
+    depends_on:
+      - matrix
     volumes:
       - "./matterbridge.toml:/etc/matterbridge/matterbridge.toml:ro"
     restart: unless-stopped

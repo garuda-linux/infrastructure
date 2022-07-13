@@ -4,6 +4,9 @@ services:
   nextcloud_app:
     image: linuxserver/nextcloud:latest
     container_name: nextcloud
+    depends_on:
+      - nextcloud_db
+      - nextcloud_redis
     environment:
       PUID: {{ puid }}
       PGID: {{ pgid }}

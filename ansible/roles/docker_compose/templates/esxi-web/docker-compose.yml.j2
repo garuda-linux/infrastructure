@@ -136,6 +136,9 @@ services:
   searx:
     image: searxng/searxng:latest
     container_name: searx
+    depends_on:
+      - filtron
+      - morty
     command: {{ searxng_command }}
     volumes:
       - "./searxng:/etc/searxng:rw"
@@ -299,6 +302,8 @@ services:
   mongo-express:
     image: mongo-express:latest
     container_name: mongo-express
+    depends_on:
+      - mongodb
     ports:
       - 8081:8081
     environment:

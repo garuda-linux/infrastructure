@@ -54,14 +54,12 @@ services:
     image: quay.io/pussthecatorg/bibliogram:latest
     container_name: bibliogram
     volumes:
-     # - "./bibliogram/config.js:/app/config.js"
       - "./bibliogram/db:/app/db"
     mem_limit: 256m
     memswap_limit: 256m
     ports:
       - "10407:10407"
     restart: always
-
 
   # Lingva
   lingva:
@@ -80,7 +78,13 @@ services:
   teddit:
     image: teddit/teddit:latest
     container_name: teddit
+    depends_on:
+      - teddit_redis
     environment:
+      DOMAIN: {{ teddit_domain }}
+      REDIS_HOST: {{ teddit_redis_host }}
+      THEME: {{ teddit_theme }}
+      TRUST_PROXY: {{ teddit_trust_proxy }}
       REDIS_HOST: teddit_redis
     ports:
       - "8081:8080"
@@ -90,13 +94,6 @@ services:
       test: ["CMD", "wget" ,"--no-verbose", "--tries=1", "--spider", "http://localhost:8080/about"]
       interval: 1m
       timeout: 3s
-    environment:
-      DOMAIN: {{ teddit_domain }}
-      REDIS_HOST: {{ teddit_redis_host }}
-      THEME: {{ teddit_theme }}
-      TRUST_PROXY: {{ teddit_trust_proxy }}
-    depends_on:
-      - teddit_redis
     restart: always
 
   teddit_redis:
@@ -112,6 +109,8 @@ services:
   invidious:
     image: quay.io/invidious/invidious:latest
     container_name: invidious
+    depends_on:
+      - invidious_db
     environment:
       INVIDIOUS_CONFIG: |
         db:
@@ -142,8 +141,6 @@ services:
       timeout: 5s
       retries: 2
     restart: always
-    depends_on:
-      - invidious_db
 
   invidious_db:
     image: docker.io/library/postgres:14
@@ -156,6 +153,6 @@ services:
       POSTGRES_DB: {{ invidious_db }}
       POSTGRES_USER: {{ invidious_db_user }}
       POSTGRES_PASSWORD: {{ invidious_db_password }}
-    restart: always
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+    restart: always
