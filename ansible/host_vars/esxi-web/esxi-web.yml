@@ -56,3 +56,7 @@ zerotier_member_ip_assignments: ["10.241.0.1"]
 # Netdata
 netdata_custom_config: true
 netdata_web_log: true
+
+# Crowdsec
+crowdsec_db: /data/metabase.db
+crowdsec_collections: crowdsecurity/nginx

@@ -5,20 +5,15 @@ services:
     image: macbre/nginx-http3:latest
     container_name: nginx
     volumes:
+      - "./letsencrypt/etc:/etc/letsencrypt:ro"
       - "./nginx/conf.d:/etc/nginx/conf.d/:ro"
-      - "./nginx/nginx.conf:/etc/nginx/nginx.conf:ro"
       - "./nginx/configs:/etc/nginx/configs:ro"
-      - "./nginx/ssl/dhparam.pem:/etc/nginx/ssl/dhparam.pem:ro"
-      - "./nginx/logs/:/var/log/nginx:rw"
       - "./nginx/goaccess:/usr/share/nginx/html/logs:ro"
+      - "./nginx/logs/:/var/log/nginx:rw"
+      - "./nginx/nginx.conf:/etc/nginx/nginx.conf:ro"
+      - "./nginx/ssl/dhparam.pem:/etc/nginx/ssl/dhparam.pem:ro"
       - "./nginx/www:/usr/share/nginx/html/www:ro"
       - "./website:/usr/share/nginx/html/website:ro"
-      - "./letsencrypt/etc:/etc/letsencrypt:ro"
-    labels:
-      com.datadoghq.ad.check_names: '["nginx"]'
-      com.datadoghq.ad.init_configs: "[{}]"
-      com.datadoghq.ad.instances: '[{"nginx_status_url": "http://%%host%%:81/nginx_status/"}]'
-      diun.enable: "true"
     ports:
       - 80:80
       - 81:81
@@ -29,7 +24,9 @@ services:
     cpus: 2.0
     restart: always
     labels:
-      - "diun.enable=true"
+      com.datadoghq.ad.check_names: '["nginx"]'
+      com.datadoghq.ad.init_configs: "[{}]"
+      diun.enable: "true"
 
   # SSL certs
   certbot:
@@ -39,42 +36,44 @@ services:
       - "./letsencrypt/etc:/etc/letsencrypt"
       - "./letsencrypt/var:/var/lib/letsencrypt"
     entrypoint: "/bin/sh -c 'trap exit TERM; sleep 10; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
-    labels:
-      - "diun.enable=true"
     mem_limit: 50m
     cpus: 0.1
     restart: always
     labels:
       - "diun.enable=true"
 
-  # Whoogle search engine
-  whoogle:
-    image: benbusby/whoogle-search:latest
-    container_name: whoogle
-    user: whoogle
-    security_opt:
-      - no-new-privileges
-    cap_drop:
-      - ALL
-    tmpfs:
-      - /var/lib/tor/:size=10M,uid=927,gid=927,mode=1700
-      - /run/tor/:size=1M,uid=927,gid=927,mode=1700
+  # Crowdsec
+  crowdsec:
+    image: crowdsecurity/crowdsec:latest
+    container_name: crowdsec
+    depends_on:
+      - nginx
     volumes:
-      - "./whoogle:/config"
+      - "./crowdsec/config/acquis.yaml:/etc/crowdsec/acquis.yaml"
+      - "./crowdsec/config:/etc/crowdsec/"
+      - "./crowdsec/db:/var/lib/crowdsec/data/"
+      - "./nginx/logs:/var/log/nginx"
     environment:
-      WHOOGLE_AUTOCOMPLETE: {{ whoogle_autocomplete }}
-      WHOOGLE_CONFIG_ALTS: {{ whoogle_config_alts }}
-      WHOOGLE_CONFIG_LANGUAGE: {{ whoogle_config_language }}
-      WHOOGLE_CONFIG_NEW_TAB: {{ whoogle_config_new_tab }}
-      WHOOGLE_CONFIG_SEARCH_LANGUAGE: {{ whoogle_config_search_language }}
-      WHOOGLE_CONFIG_THEME: {{ whoogle_config_theme }}
-      WHOOGLE_CONFIG_URL: {{ whoogle_config_url }}
-      WHOOGLE_CONFIG_VIEW_IMAGE: {{ whoogle_config_view_image }}
-      WHOOGLE_RESULTS_PER_PAGE: {{ whoogle_results_per_page }}
-    pids_limit: 50
-    mem_limit: 256mb
-    memswap_limit: 256mb
+      COLLECTIONS: {{ crowdsec_collections }}
+      GID: {{ crowdsec_gid }}
+    mem_limit: 200m
     cpus: 1.0
+    restart: always
+    labels:
+      - "diun.enable=true"
+
+  crowdsec_dashboard:
+    build: ./crowdsec/dashboard
+    container_name: crowdsec_dashboard
+    depends_on:
+      - crowdsec
+    environment:
+      MB_DB_FILE: {{ crowdsec_db }}
+      MGID: {{ crowdsec_gid }}
+    volumes:
+      - "./crowdsec/db:/metabase-data/"
+    mem_limit: 300m
+    cpus: 0.3
     restart: always
     labels:
       - "diun.enable=true"
@@ -97,6 +96,38 @@ services:
       LOG_LEVEL: {{ log_level }}
     mem_limit: 40m
     cpus: 0.2
+    restart: always
+    labels:
+      - "diun.enable=true"
+
+  # Whoogle search engine
+  whoogle:
+    image: benbusby/whoogle-search:latest
+    container_name: whoogle
+    user: whoogle
+    security_opt:
+      - no-new-privileges
+    cap_drop:
+      - ALL
+    tmpfs:
+      - "/var/lib/tor/:size=10M,uid=927,gid=927,mode=1700"
+      - "/run/tor/:size=1M,uid=927,gid=927,mode=1700"
+    volumes:
+      - "./whoogle:/config"
+    environment:
+      WHOOGLE_AUTOCOMPLETE: {{ whoogle_autocomplete }}
+      WHOOGLE_CONFIG_ALTS: {{ whoogle_config_alts }}
+      WHOOGLE_CONFIG_LANGUAGE: {{ whoogle_config_language }}
+      WHOOGLE_CONFIG_NEW_TAB: {{ whoogle_config_new_tab }}
+      WHOOGLE_CONFIG_SEARCH_LANGUAGE: {{ whoogle_config_search_language }}
+      WHOOGLE_CONFIG_THEME: {{ whoogle_config_theme }}
+      WHOOGLE_CONFIG_URL: {{ whoogle_config_url }}
+      WHOOGLE_CONFIG_VIEW_IMAGE: {{ whoogle_config_view_image }}
+      WHOOGLE_RESULTS_PER_PAGE: {{ whoogle_results_per_page }}
+    pids_limit: 50
+    mem_limit: 256mb
+    memswap_limit: 256mb
+    cpus: 1.0
     restart: always
     labels:
       - "diun.enable=true"
