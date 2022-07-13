@@ -16,10 +16,9 @@ services:
       - "./website:/usr/share/nginx/html/website:ro"
     ports:
       - 80:80
-      - 81:81
       - 443:443
       - 443:443/udp
-    mem_limit: 500m
+    mem_limit: 1000m
     mem_reservation: 200m
     cpus: 2.0
     restart: always
@@ -70,11 +69,14 @@ services:
     environment:
       MB_DB_FILE: {{ crowdsec_db }}
       MGID: {{ crowdsec_gid }}
+    ports:
+      - 3001:3000
     volumes:
       - "./crowdsec/db:/metabase-data/"
-    mem_limit: 300m
-    cpus: 0.3
-    restart: always
+      - "./crowdsec/metabase.db:/data/metabase.db"
+    mem_limit: 600m
+    cpus: 0.5
+    restart: unless-stopped
     labels:
       - "diun.enable=true"
 
