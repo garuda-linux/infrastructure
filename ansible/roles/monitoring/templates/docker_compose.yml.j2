@@ -16,6 +16,9 @@ services:
 {% if netdata_web_log == true %}
       - "/var/cache/garuda-{{ inventory_hostname }}/nginx/logs:/var/log/nginx:ro"
 {% endif %}
+{% if 'borg_servers' in group_names %}
+      - "/backups:/backups:ro"
+{% endif %}
       - "/etc/group:/host/etc/group:ro"
       - "/etc/os-release:/host/etc/os-release:ro"
       - "/etc/passwd:/host/etc/passwd:ro"
