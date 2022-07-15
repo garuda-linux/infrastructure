@@ -19,15 +19,16 @@ services:
     container_name: crowdsec
     depends_on:
       - crowdsec_db
-    volumes:
-      - "./crowdsec/config:/etc/crowdsec/"
     environment:
       GID: {{ crowdsec_gid }}
-    mem_limit: 200m
+    volumes:
+      - "./crowdsec/config:/etc/crowdsec/"
+    mem_limit: 300m
+    mem_reservation: 50m
     cpus: 1.0
     restart: always
 
-  crowdsec_db:                                                                                        [0/9149]
+  crowdsec_db:
     image: postgres:latest
     container_name: crowdsec_db
     environment:
@@ -36,4 +37,17 @@ services:
       POSTGRES_DB: {{ crowdsec_db }}
     volumes:
       - "./crowdsec/postgres:/var/lib/postgresql/data"
+    mem_limit: 256m
+    mem_reservation: 20m
+    cpus: 0.5
+    restart: always
+
+  cloudflare-bouncer:
+    image: crowdsecurity/cloudflare-bouncer:latest
+    container_name: crowdsec_cf_bouncer
+    volumes:
+      - ./crowdsec/cf_bouncer/cfg.yaml:/etc/crowdsec/bouncers/crowdsec-cloudflare-bouncer.yaml'
+    mem_limit: 100m
+    mem_reservation: 10m
+    cpus: 0.3
     restart: always
