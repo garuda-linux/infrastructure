@@ -1,8 +1,4 @@
 ---
 borg_repo_dir: /backups
-borg_clients:
-  - esxi-cloud
-  - esxi-forum
-  - esxi-web
-  - esxi-web-two
-  - web
+#borg_clients:
+#  - esxi-cloud

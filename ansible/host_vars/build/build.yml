@@ -2,6 +2,7 @@
 actual_hostname: garuda-build
 ansible_host: 216.158.66.108
 caur_primary: true
+crowdsec: true
 docker_compose: true
 letsencrypt_data: "/var/cache/{{ inventory_hostname }}/letsencrypt"
 letsencrypt_domain: "builds.garudalinux.org,cf-builds.garudalinux.org"

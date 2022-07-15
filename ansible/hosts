@@ -21,6 +21,7 @@ web
 [borg_clients]
 esxi-cloud
 esxi-forum
+esxi-monitor
 esxi-web
 esxi-web-two
 web

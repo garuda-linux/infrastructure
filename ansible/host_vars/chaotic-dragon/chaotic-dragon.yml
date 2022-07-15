@@ -3,6 +3,7 @@ actual_hostname: chaotic-dragon
 ansible_host: 89.58.13.188
 ansible_port: 420
 chaotic_cluster: true
+crowdsec: true
 docker_compose: true
 
 # Syncthing

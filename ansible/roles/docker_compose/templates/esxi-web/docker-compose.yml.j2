@@ -41,45 +41,6 @@ services:
     labels:
       - "diun.enable=true"
 
-  # Crowdsec
-  crowdsec:
-    image: crowdsecurity/crowdsec:latest
-    container_name: crowdsec
-    depends_on:
-      - nginx
-    volumes:
-      - "./crowdsec/config/acquis.yaml:/etc/crowdsec/acquis.yaml"
-      - "./crowdsec/config:/etc/crowdsec/"
-      - "./crowdsec/db:/var/lib/crowdsec/data/"
-      - "./nginx/logs:/var/log/nginx"
-    environment:
-      COLLECTIONS: {{ crowdsec_collections }}
-      GID: {{ crowdsec_gid }}
-    mem_limit: 200m
-    cpus: 1.0
-    restart: always
-    labels:
-      - "diun.enable=true"
-
-  crowdsec_dashboard:
-    build: ./crowdsec/dashboard
-    container_name: crowdsec_dashboard
-    depends_on:
-      - crowdsec
-    environment:
-      MB_DB_FILE: {{ crowdsec_db }}
-      MGID: {{ crowdsec_gid }}
-    ports:
-      - 3001:3000
-    volumes:
-      - "./crowdsec/db:/metabase-data/"
-      - "./crowdsec/metabase.db:/data/metabase.db"
-    mem_limit: 600m
-    cpus: 0.5
-    restart: unless-stopped
-    labels:
-      - "diun.enable=true"
-
   # Automatic container updates
   diun:
     image: crazymax/diun:latest

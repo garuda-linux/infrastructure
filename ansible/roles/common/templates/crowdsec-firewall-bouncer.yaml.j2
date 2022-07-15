@@ -1,0 +1,23 @@
+mode: iptables
+pid_dir: /var/run/
+update_frequency: 10s
+daemonize: true
+log_mode: file
+log_dir: /var/log/
+log_level: info
+log_compression: true
+log_max_size: 100
+log_max_backups: 3
+log_max_age: 30
+api_url: {{ crowdsec_lapi_url }}
+api_key: {{ crowdsec_bouncer_api }}
+insecure_skip_verify: false
+disable_ipv6: false
+deny_action: DROP
+deny_log: false
+supported_decisions_types:
+  - ban
+blacklists_ipv4: crowdsec-blacklists
+blacklists_ipv6: crowdsec6-blacklists
+iptables_chains:
+  - INPUT

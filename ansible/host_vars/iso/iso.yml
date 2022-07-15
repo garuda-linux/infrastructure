@@ -1,6 +1,7 @@
 # Base values
 actual_hostname: garuda-iso
 ansible_host: 78.129.140.86
+crowdsec: true
 docker_compose: true
 letsencrypt_domain: "iso.builds.garudalinux.org"
 

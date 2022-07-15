@@ -36,6 +36,7 @@
       - rsync
       - smartmontools
       - vnstat
+      - which
       - zram-generator
     state: present
 - name: Start and enable vnstatd
@@ -240,3 +241,31 @@
     state: present
   when: docker_compose | default(false) == true and cloudflared_tunnel is defined
   ignore_errors: yes
+- name: Install Crowdsec and firewall bouncer
+  pacman:
+    name:
+      - crowdsec
+      - cs-firewall-bouncer
+- name: Install Crowdsec configuration files
+  template:
+    dest: /etc/crowdsec/{{ item.dest }}
+    group: root
+    mode: 0600
+    owner: root
+    src: "{{ item.src }}"
+  loop:
+    - { src: 'local_api_credentials.yaml.j2', dest: 'local_api_credentials.yaml' }
+    - { src: 'crowdsec-firewall-bouncer.yaml.j2', dest: 'bouncers/crowdsec-firewall-bouncer.yaml' }
+  when: crowdsec | default(false) == true
+- name: Disable API on crowdsec agents
+  command: sed -i '/ExecStart/s/config.yaml/config.yaml -no-api/' /etc/systemd/system/crowdsec.service
+  when: crowdsec | default(false) == true
+- name: Restart Crowdsec and firewall bouncer services
+  systemd:
+    name: "{{ item }}"
+    state: restarted
+    daemon_reload: yes
+  loop:
+    - crowdsec.service
+    - crowdsec-firewall-bouncer.service
+  when: crowdsec | default(false) == true

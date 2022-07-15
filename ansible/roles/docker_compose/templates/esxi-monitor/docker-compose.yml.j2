@@ -12,3 +12,28 @@ services:
     mem_reservation: 10m
     cpus: 0.2
     restart: always
+
+  # Crowdsec main node
+  crowdsec:
+    image: crowdsecurity/crowdsec:latest
+    container_name: crowdsec
+    depends_on:
+      - crowdsec_db
+    volumes:
+      - "./crowdsec/config:/etc/crowdsec/"
+    environment:
+      GID: {{ crowdsec_gid }}
+    mem_limit: 200m
+    cpus: 1.0
+    restart: always
+
+  crowdsec_db:                                                                                        [0/9149]
+    image: postgres:latest
+    container_name: crowdsec_db
+    environment:
+      POSTGRES_PASSWORD: {{ crowdsec_password }}
+      POSTGRES_USER: {{ crowdsec_user }}
+      POSTGRES_DB: {{ crowdsec_db }}
+    volumes:
+      - "./crowdsec/postgres:/var/lib/postgresql/data"
+    restart: always

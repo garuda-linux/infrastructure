@@ -4,6 +4,7 @@ ansible_host: 65.108.140.36
 ansible_port: 222
 borg_dir: /var/cache/garuda-esxi-web
 cf_sync_ip: true
+crowdsec: true
 dl_git: true
 docker_compose: true
 goaccess: true
@@ -56,7 +57,3 @@ zerotier_member_ip_assignments: ["10.241.0.1"]
 # Netdata
 netdata_custom_config: true
 netdata_web_log: true
-
-# Crowdsec
-crowdsec_db: /data/metabase.db
-crowdsec_collections: crowdsecurity/nginx
