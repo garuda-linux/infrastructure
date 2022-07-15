@@ -46,7 +46,7 @@ services:
     image: crowdsecurity/cloudflare-bouncer:latest
     container_name: crowdsec_cf_bouncer
     volumes:
-      - ./crowdsec/cf_bouncer/cfg.yaml:/etc/crowdsec/bouncers/crowdsec-cloudflare-bouncer.yaml'
+      - ./crowdsec/cf_bouncer/cfg.yaml:/etc/crowdsec/bouncers/crowdsec-cloudflare-bouncer.yaml
     mem_limit: 100m
     mem_reservation: 10m
     cpus: 0.3
