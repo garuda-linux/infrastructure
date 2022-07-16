@@ -1,31 +1,42 @@
 version: "3.9"
 services:
-  # Nginx proxy manager
-  app:
-    image: jc21/nginx-proxy-manager:latest
-    depends_on:
-      - db
-    restart: always
+  # Webserver - reverse proxying all the other containers
+  nginx:
+    image: macbre/nginx-http3:latest
+    container_name: nginx
+    volumes:
+      - "./letsencrypt/etc:/etc/letsencrypt:ro"
+      - "./nginx/conf.d:/etc/nginx/conf.d/:ro"
+      - "./nginx/configs:/etc/nginx/configs:ro"
+      - "./nginx/goaccess:/usr/share/nginx/html/logs:ro"
+      - "./nginx/logs/:/var/log/nginx:rw"
+      - "./nginx/nginx.conf:/etc/nginx/nginx.conf:ro"
+      - "./nginx/ssl/dhparam.pem:/etc/nginx/ssl/dhparam.pem:ro"
+      - "./nginx/www:/usr/share/nginx/html/www:ro"
+      - "./website:/usr/share/nginx/html/website:ro"
     ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - "./config.json:/app/config/production.json"
-      - "./npm/data:/data"
-      - "./npm/letsencrypt:/etc/letsencrypt"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-
-  db:
-    image: jc21/mariadb-aria:latest-innodb
+      - 80:80
+      - 443:443
+      - 443:443/udp
+    mem_limit: 1000m
+    mem_reservation: 200m
+    cpus: 2.0
     restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: {{ npm_mysql_root_password }}
-      MYSQL_DATABASE: {{ npm_mysql_database }}
-      MYSQL_USER: {{ npm_mysql_user }}
-      MYSQL_PASSWORD: {{ npm_mysql_password }}
+    labels:
+      com.datadoghq.ad.check_names: '["nginx"]'
+      com.datadoghq.ad.init_configs: "[{}]"
+
+  # SSL certs
+  certbot:
+    image: certbot/dns-cloudflare:latest
+    container_name: certbot
     volumes:
-      - "./npm/data/mysql:/var/lib/mysql"
+      - "./letsencrypt/etc:/etc/letsencrypt"
+      - "./letsencrypt/var:/var/lib/letsencrypt"
+    entrypoint: "/bin/sh -c 'trap exit TERM; sleep 10; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    mem_limit: 50m
+    cpus: 0.1
+    restart: always
 
   # Garuda wiki
   wikijs_app:
@@ -88,6 +99,7 @@ services:
       - "./matrix/matrix-irc/appservice-registration-irc.yaml:/irc-registration.yaml"
       - "./matrix/matrix-discord/discord-registration.yaml:/discord-registration.yaml"
 
+  # Matrix Web client
   matrix_web:
     image: vectorim/element-web
     container_name: element_web
@@ -97,6 +109,7 @@ services:
       - "./matrix/element_web/config.json:/app/config.json"
     restart: always
 
+  # Admin interface for matrix
   matrix_admin:
     image: awesometechnologies/synapse-admin:latest
     container_name: matrix_admin
@@ -104,6 +117,7 @@ services:
       - matrix
     restart: unless-stopped
 
+  # Matrix to IRC/Discord/Telegram relay
   matterbridge:
     image: 42wim/matterbridge:stable
     container_name: matterbridge
@@ -113,6 +127,7 @@ services:
       - "./matterbridge.toml:/etc/matterbridge/matterbridge.toml:ro"
     restart: unless-stopped
 
+  # Wikijs / Matrix database
   postgres:
     image: postgres:14-alpine
     container_name: postgres

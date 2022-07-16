@@ -2,6 +2,7 @@
 actual_hostname: garuda-web
 ansible_host: 216.158.66.107
 borg_dir: /var/cache/garuda-web
+cf_sync_ip: true
 crowdsec: true
 docker_compose: true
 

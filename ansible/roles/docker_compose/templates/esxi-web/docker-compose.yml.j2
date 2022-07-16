@@ -5,7 +5,7 @@ services:
     image: macbre/nginx-http3:latest
     container_name: nginx
     volumes:
-      - "./letsencrypt/etc:/etc/letsencrypt:ro"
+      - "./nginx/letsencrypt/etc:/etc/letsencrypt:ro"
       - "./nginx/conf.d:/etc/nginx/conf.d/:ro"
       - "./nginx/configs:/etc/nginx/configs:ro"
       - "./nginx/goaccess:/usr/share/nginx/html/logs:ro"
@@ -34,6 +34,7 @@ services:
     volumes:
       - "./letsencrypt/etc:/etc/letsencrypt"
       - "./letsencrypt/var:/var/lib/letsencrypt"
+      - "/root/.cloudflare:/root/.cloudflare"
     entrypoint: "/bin/sh -c 'trap exit TERM; sleep 10; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
     mem_limit: 50m
     cpus: 0.1
