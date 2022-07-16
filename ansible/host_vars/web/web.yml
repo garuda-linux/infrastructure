@@ -9,3 +9,7 @@ docker_compose: true
 # Zerotier
 zerotier_member_description: garuda-web
 zerotier_member_ip_assignments: ["10.241.0.4"]
+
+# Netdata
+netdata_custom_config: true
+netdata_web_log: true

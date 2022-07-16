@@ -5,7 +5,7 @@ services:
     image: macbre/nginx-http3:latest
     container_name: nginx
     volumes:
-      - "./letsencrypt/etc:/etc/letsencrypt:ro"
+      - "./nginx/letsencrypt/etc:/etc/letsencrypt:ro"
       - "./nginx/conf.d:/etc/nginx/conf.d/:ro"
       - "./nginx/configs:/etc/nginx/configs:ro"
       - "./nginx/goaccess:/usr/share/nginx/html/logs:ro"
