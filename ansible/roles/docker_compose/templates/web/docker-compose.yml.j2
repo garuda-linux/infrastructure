@@ -8,12 +8,9 @@ services:
       - "./nginx/letsencrypt/etc:/etc/letsencrypt:ro"
       - "./nginx/conf.d:/etc/nginx/conf.d/:ro"
       - "./nginx/configs:/etc/nginx/configs:ro"
-      - "./nginx/goaccess:/usr/share/nginx/html/logs:ro"
       - "./nginx/logs/:/var/log/nginx:rw"
       - "./nginx/nginx.conf:/etc/nginx/nginx.conf:ro"
       - "./nginx/ssl/dhparam.pem:/etc/nginx/ssl/dhparam.pem:ro"
-      - "./nginx/www:/usr/share/nginx/html/www:ro"
-      - "./website:/usr/share/nginx/html/website:ro"
     ports:
       - 80:80
       - 443:443
@@ -92,12 +89,9 @@ services:
     container_name: matrix
     depends_on:
       - postgres
-    restart: always
     volumes:
       - "./matrix/matrix:/data"
-      - "./matrix/mautrix-telegram/registration.yaml:/mautrix-registration.yaml"
-      - "./matrix/matrix-irc/appservice-registration-irc.yaml:/irc-registration.yaml"
-      - "./matrix/matrix-discord/discord-registration.yaml:/discord-registration.yaml"
+    restart: always
 
   # Matrix Web client
   matrix_web:
@@ -106,7 +100,7 @@ services:
     depends_on:
       - matrix
     volumes:
-      - "./matrix/element_web/config.json:/app/config.json"
+      - "./matrix/element/config.json:/app/config.json"
     restart: always
 
   # Admin interface for matrix
@@ -124,7 +118,7 @@ services:
     depends_on:
       - matrix
     volumes:
-      - "./matterbridge.toml:/etc/matterbridge/matterbridge.toml:ro"
+      - "./matterbridge/matterbridge.toml:/etc/matterbridge/matterbridge.toml:ro"
     restart: unless-stopped
 
   # Wikijs / Matrix database
