@@ -43,6 +43,9 @@ services:
       - postgres
     volumes:
       - "./wikijs/assets:/wiki/assets/favicons"
+    mem_limit: 400m
+    mem_reservation: 20m
+    cpus: 1.0
     environment:
       DB_TYPE: {{ db_type }}
       DB_HOST: {{ db_host }}
@@ -57,22 +60,27 @@ services:
     image: mariadb:latest
     container_name: matomo_db
     command: --max-allowed-packet=64MB
-    restart: always
     volumes:
       - "./matomo/db:/var/lib/mysql"
+    mem_limit: 400m
+    mem_reservation: 50m
+    cpus: 1.0
     environment:
       MYSQL_ROOT_PASSWORD: {{ mysql_root_password }}
+    restart: always
 
   matomo_app:
     image: matomo:latest
     container_name: matomo_app
     depends_on:
       - matomo_db
-    restart: always
     volumes:
       - "./matomo/config:/var/www/html/config"
       - "./matomo/logs:/var/www/html/logs"
       - "./matomo/www:/var/www/html"
+    mem_limit: 400m
+    mem_reservation: 50m
+    cpus: 1.0
     environment:
       MYSQL_PASSWORD: {{ mysql_password }}
       MYSQL_DATABASE: {{ mysql_database }}
@@ -82,6 +90,7 @@ services:
       MATOMO_DATABASE_USERNAME: {{ matomo_database_username }}
       MATOMO_DATABASE_PASSWORD: {{ matomo_database_password }}
       MATOMO_DATABASE_DBNAME: {{ matomo_database_dbname }}
+    restart: always
 
   # Matrix homeserver
   matrix:
@@ -91,6 +100,9 @@ services:
       - postgres
     volumes:
       - "./matrix/matrix:/data"
+    mem_limit: 1024m
+    mem_reservation: 200m
+    cpus: 2.0
     restart: always
 
   # Matrix Web client
@@ -101,6 +113,9 @@ services:
       - matrix
     volumes:
       - "./matrix/element/config.json:/app/config.json"
+    mem_limit: 256m
+    mem_reservation: 20m
+    cpus: 1.0
     restart: always
 
   # Admin interface for matrix
@@ -109,6 +124,9 @@ services:
     container_name: matrix_admin
     depends_on:
       - matrix
+    mem_limit: 256m
+    mem_reservation: 20m
+    cpus: 1.0
     restart: unless-stopped
 
   # Matrix to IRC/Discord/Telegram relay
@@ -119,6 +137,9 @@ services:
       - matrix
     volumes:
       - "./matterbridge/matterbridge.toml:/etc/matterbridge/matterbridge.toml:ro"
+    mem_limit: 100m
+    mem_reservation: 20m
+    cpus: 0.2
     restart: unless-stopped
 
   # Wikijs / Matrix database
@@ -130,6 +151,9 @@ services:
       POSTGRES_USER: {{ postgres_user }}
     volumes:
       - "./postgres/:/var/lib/postgresql/data"
+    mem_limit: 2048m
+    mem_reservation: 200m
+    cpus: 2.0
     restart: always
 
   # Private network

@@ -27,12 +27,12 @@ services:
       - "8888:8888"
     depends_on:
       - nitter_redis
-    restart: always
     healthcheck:
       test: wget -nv --tries=1 --spider http://127.0.0.1:8080/Jack/status/20 || exit 1
       interval: 30s
       timeout: 5s
       retries: 2
+    restart: always
 
   nitter_redis:
     image: redis:6-alpine
@@ -42,12 +42,12 @@ services:
       - ./nitter/redis:/data
     mem_limit: 256m
     memswap_limit: 256m
-    restart: always
     healthcheck:
       test: redis-cli ping
       interval: 30s
       timeout: 5s
       retries: 2
+    restart: always
 
   # Bibliogram
   bibliogram:
@@ -70,6 +70,8 @@ services:
       DEFAULT_SOURCE_LANG: {{ lingva_source_lang }}
       DEFAULT_TARGET_LANG: {{ lingva_target_lang }}
       SITE_DOMAIN: {{ lingva_site_domain }}
+    mem_limit: 256m
+    memswap_limit: 256m
     ports:
       - "3000:3000"
     restart: always
@@ -88,8 +90,8 @@ services:
       REDIS_HOST: teddit_redis
     ports:
       - "8081:8080"
-    mem_limit: 256m
-    memswap_limit: 256m
+    mem_limit: 400m
+    memswap_limit: 400m
     healthcheck:
       test: ["CMD", "wget" ,"--no-verbose", "--tries=1", "--spider", "http://localhost:8080/about"]
       interval: 1m
@@ -100,12 +102,13 @@ services:
     image: redis:6.2.5-alpine
     container_name: teddit_redis
     command: redis-server
-    mem_limit: 256m
-    memswap_limit: 256m
     environment:
       REDIS_REPLICATION_MODE: master
+    mem_limit: 256m
+    memswap_limit: 256m
     restart: always
 
+  # Invious YouTube frontend
   invidious:
     image: quay.io/invidious/invidious:latest
     container_name: invidious
@@ -135,6 +138,8 @@ services:
         captcha_key: {{ invidious_captcha_key }}
     ports:
       - "3001:3000"
+    mem_limit: 512m
+    memswap_limit: 512m
     healthcheck:
       test: wget -nv --tries=1 --spider http://127.0.0.1:3000/api/v1/comments/jNQXAC9IVRw || exit 1
       interval: 30s
@@ -153,6 +158,74 @@ services:
       POSTGRES_DB: {{ invidious_db }}
       POSTGRES_USER: {{ invidious_db_user }}
       POSTGRES_PASSWORD: {{ invidious_db_password }}
+    mem_limit: 256m
+    memswap_limit: 256m
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
     restart: always
+
+  # Piped
+  piped_backend:
+    image: 1337kavin/piped:latest
+    container_name: piped_backend
+    depends_on:
+      - piped_postgres
+    volumes:
+      - ./piped/config.properties:/app/config.properties:ro
+    mem_limit: 256m
+    memswap_limit: 256m
+    restart: always
+
+  piped_frontend:
+    image: 1337kavin/piped-frontend:latest
+    container_name: piped_frontend
+    entrypoint: ash -c 'sed -i s/pipedapi.kavin.rocks/piped-api.garudalinux.org/g /usr/share/nginx/html/assets/* && /docker-entrypoint.sh && nginx -g "daemon off;"'
+    depends_on:
+      - piped_backend
+    mem_limit: 256m
+    memswap_limit: 256m
+    restart: always
+
+  piped_nginx:
+    image: nginx:mainline-alpine
+    container_name: piped_nginx
+    depends_on:
+      - piped_backend
+      - piped_frontend
+      - ytproxy
+    ports:
+      - "8082:80"
+    volumes:
+      - ./piped/config/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./piped/config/pipedapi.conf:/etc/nginx/conf.d/pipedapi.conf:ro
+      - ./piped/config/pipedproxy.conf:/etc/nginx/conf.d/pipedproxy.conf:ro
+      - ./piped/config/pipedfrontend.conf:/etc/nginx/conf.d/pipedfrontend.conf:ro
+      - ./piped/config/ytproxy.conf:/etc/nginx/snippets/ytproxy.conf:ro
+      - ytproxy:/var/run/ytproxy
+    mem_limit: 256m
+    memswap_limit: 256m
+    restart: always
+
+  piped_postgres:
+    image: postgres:13-alpine
+    container_name: piped_postgres
+    volumes:
+      - ./piped/db:/var/lib/postgresql/data
+    mem_limit: 256m
+    memswap_limit: 256m
+    environment:
+      POSTGRES_DB: {{ piped_db }}
+      POSTGRES_PASSWORD: {{ piped_db_password }}
+      POSTGRES_USER: {{ piped_db_user }}
+    restart: always
+
+  ytproxy:
+    image: 1337kavin/ytproxy:latest
+    volumes:
+      - ytproxy:/app/socket
+    mem_limit: 256m
+    memswap_limit: 256m
+    restart: always
+
+volumes:
+    ytproxy: null
