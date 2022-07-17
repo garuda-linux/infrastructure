@@ -138,8 +138,8 @@ services:
         captcha_key: {{ invidious_captcha_key }}
     ports:
       - "3001:3000"
-    mem_limit: 512m
-    memswap_limit: 512m
+    mem_limit: 1024m
+    memswap_limit: 1024m
     healthcheck:
       test: wget -nv --tries=1 --spider http://127.0.0.1:3000/api/v1/comments/jNQXAC9IVRw || exit 1
       interval: 30s
