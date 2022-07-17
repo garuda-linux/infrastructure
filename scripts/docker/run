@@ -1,0 +1,4 @@
+#!/bin/bash
+export GID="$(id -g)"
+export UID
+docker-compose run infrastructure

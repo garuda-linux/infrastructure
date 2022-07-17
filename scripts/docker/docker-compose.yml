@@ -1,0 +1,15 @@
+version: "3.8"
+services:
+  infrastructure:
+    build: .
+    image: garuda-infrastructure:latest
+    stdin_open: true
+    tty: true
+    volumes:
+      - "../../:/user/infrastructure"
+      - "~/.ssh:/user/.ssh"
+      - "./home:/user"
+    environment:
+      - GARUDA_UID=${UID}
+      - GARUDA_GID=${GID}
+      - GARUDA_USER=${USER}

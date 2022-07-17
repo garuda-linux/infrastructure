@@ -1,7 +1,7 @@
 ---
+- import_playbook: hardening.yml
 - import_playbook: garuda.yml
 - import_playbook: server_config.yml
-- import_playbook: hardening.yml
 - import_playbook: borg.yml
 - import_playbook: mirrors.yml
 - import_playbook: chaotic_aur.yml

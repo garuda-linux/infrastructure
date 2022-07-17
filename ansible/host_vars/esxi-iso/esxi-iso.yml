@@ -2,6 +2,8 @@
 actual_hostname: exsi-iso
 ansible_host: 65.108.140.36
 ansible_port: 226
+crowdsec: true
+docker_compose: true
 
 # Devsec - we don't want to disable efi as its needed for iso builds
 os_modprobe_enabled: false

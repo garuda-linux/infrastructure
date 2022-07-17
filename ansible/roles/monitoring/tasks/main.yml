@@ -14,6 +14,7 @@
     src: "{{ inventory_hostname }}/netdata"
     dest: /var/cache/monitoring/
     follow: yes
+    mode: preserve
   when: netdata_custom_config | default(false) == true
 - name: Run docker-compose up -d
   shell: docker-compose up -d --remove-orphans
@@ -68,11 +69,7 @@
     recurse: yes
     owner: 201
     group: 201
-- name: Update monitoring docker-compose stack
-  shell: docker-compose pull --ignore-pull-failures && docker-compose up -d --force-recreate
+- name: Restart Netdata to apply configuration changes
+  shell: docker-compose restart
   args:
     chdir: /var/cache/monitoring
-- name: Prune unused Docker resources
-  shell: docker system prune -fa
-- name: Restart Netdata to apply configuration changes
-  shell: docker restart netdata

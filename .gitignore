@@ -2,3 +2,4 @@
 buffer/
 node_modules/
 yarn.lock
+scripts/docker/home

@@ -1,0 +1,4 @@
+#!/bin/bash
+pushd scripts/docker >/dev/null
+./run
+popd >/dev/null
