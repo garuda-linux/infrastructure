@@ -22,7 +22,7 @@ services:
     environment:
       GID: {{ crowdsec_gid }}
     ports:
-      - "8080:8080"
+      - "8081:8080"
     volumes:
       - "./crowdsec/config:/etc/crowdsec/"
     mem_limit: 300m

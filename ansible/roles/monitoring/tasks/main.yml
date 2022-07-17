@@ -75,4 +75,4 @@
 - name: Prune unused Docker resources
   shell: docker system prune -fa
 - name: Restart Netdata to apply configuration changes
-  shell: docker exec -it netdata netdatacli reload-health
+  shell: docker restart netdata
