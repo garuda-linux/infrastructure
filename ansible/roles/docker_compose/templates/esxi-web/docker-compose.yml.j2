@@ -25,7 +25,6 @@ services:
     labels:
       com.datadoghq.ad.check_names: '["nginx"]'
       com.datadoghq.ad.init_configs: "[{}]"
-      diun.enable: "true"
 
   # SSL certs
   certbot:
@@ -39,30 +38,6 @@ services:
     mem_limit: 50m
     cpus: 0.1
     restart: always
-    labels:
-      - "diun.enable=true"
-
-  # Automatic container updates
-  diun:
-    image: crazymax/diun:latest
-    container_name: diun
-    command: serve
-    volumes:
-      - "./diun:/data"
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
-    environment:
-      DIUN_NOTIF_TELEGRAM_CHATIDS: {{ diun_notif_telegram_chatids }}
-      DIUN_NOTIF_TELEGRAM_TOKEN: {{ diun_notif_telegram_token }}
-      DIUN_PROVIDERS_DOCKER: {{ diun_providers_docker }}
-      DIUN_WATCH_SCHEDULE: "{{ diun_watch_schedule }}"
-      DIUN_WATCH_WORKERS: {{ diun_watch_workers }}
-      LOG_JSON: {{ log_json }}
-      LOG_LEVEL: {{ log_level }}
-    mem_limit: 40m
-    cpus: 0.2
-    restart: always
-    labels:
-      - "diun.enable=true"
 
   # Whoogle search engine
   whoogle:
@@ -93,8 +68,6 @@ services:
     memswap_limit: 256mb
     cpus: 1.0
     restart: always
-    labels:
-      - "diun.enable=true"
 
   # Searxng search engine
   searx:
@@ -122,8 +95,6 @@ services:
     mem_reservation: 500m
     cpus: 1.0
     restart: always
-    labels:
-      - "diun.enable=true"
 
   morty:
     image: dalf/morty:latest
@@ -142,8 +113,6 @@ services:
     mem_limit: 20m
     cpus: 0.2
     restart: always
-    labels:
-      - "diun.enable=true"
 
   filtron:
     image: dalf/filtron:latest
@@ -160,8 +129,6 @@ services:
     mem_limit: 15m
     cpus: 0.2
     restart: always
-    labels:
-      - "diun.enable=true"
 
   # Firefox syncserver
   syncserver:
@@ -181,8 +148,6 @@ services:
     mem_reservation: 50m
     cpus: 0.2
     restart: always
-    labels:
-      - "diun.enable=true"
 
   # Web IRC access
   thelounge:
@@ -194,8 +159,6 @@ services:
     mem_reservation: 30m
     cpus: 0.2
     restart: always
-    labels:
-      - "diun.enable=true"
 
   # Password vault
   bitwarden:
@@ -217,8 +180,6 @@ services:
     mem_reservation: 10m
     cpus: 0.2
     restart: always
-    labels:
-      - "diun.enable=true"
 
   # Secure pastebin
   privatebin:
@@ -231,8 +192,6 @@ services:
     mem_reservation: 40m
     cpus: 0.2
     restart: always
-    labels:
-      - "diun.enable=true"
 
   # Garuda startpage
   homer:
@@ -243,8 +202,6 @@ services:
     mem_limit: 10m
     cpus: 0.1
     restart: always
-    labels:
-      - "diun.enable=true"
 
   # MongoDB instance
   mongodb:
@@ -259,8 +216,6 @@ services:
     mem_reservation: 150m
     cpus: 2.0
     restart: always
-    labels:
-      - "diun.enable=true"
 
   # MongoDB admin interface
   mongo-express:
@@ -278,5 +233,17 @@ services:
     mem_reservation: 20m
     cpus: 0.2
     restart: unless-stopped
-    labels:
-      - "diun.enable=true"
+
+  # Container updates
+  watchtower:
+    image: containrrr/watchtower:latest
+    container_name: watchtower
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    environment:
+      WATCHTOWER_CLEANUP: {{ watchtower_cleanup }}
+      WATCHTOWER_INCLUDE_RESTARTING: {{ watchtower_include_restart }}
+      WATCHTOWER_POLL_INTERVAL: {{ watchtower_poll_interval }}
+    mem_limit: 100m
+    cpus: 0.3
+    restart: always

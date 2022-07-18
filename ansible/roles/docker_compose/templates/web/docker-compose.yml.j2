@@ -56,19 +56,6 @@ services:
     restart: always
 
   # Privacy friendly analytics
-  matomo_db:
-    image: mariadb:latest
-    container_name: matomo_db
-    command: --max-allowed-packet=64MB
-    volumes:
-      - "./matomo/db:/var/lib/mysql"
-    mem_limit: 400m
-    mem_reservation: 50m
-    cpus: 1.0
-    environment:
-      MYSQL_ROOT_PASSWORD: {{ mysql_root_password }}
-    restart: always
-
   matomo_app:
     image: matomo:latest
     container_name: matomo_app
@@ -90,6 +77,19 @@ services:
       MATOMO_DATABASE_USERNAME: {{ matomo_database_username }}
       MATOMO_DATABASE_PASSWORD: {{ matomo_database_password }}
       MATOMO_DATABASE_DBNAME: {{ matomo_database_dbname }}
+    restart: always
+
+  matomo_db:
+    image: mariadb:latest
+    container_name: matomo_db
+    command: --max-allowed-packet=64MB
+    volumes:
+      - "./matomo/db:/var/lib/mysql"
+    mem_limit: 400m
+    mem_reservation: 50m
+    cpus: 1.0
+    environment:
+      MYSQL_ROOT_PASSWORD: {{ mysql_root_password }}
     restart: always
 
   # Matrix homeserver
@@ -167,4 +167,18 @@ services:
     mem_limit: 50m
     mem_reservation: 10m
     cpus: 0.2
+    restart: always
+
+  # Container updates
+  watchtower:
+    image: containrrr/watchtower:latest
+    container_name: watchtower
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    environment:
+      WATCHTOWER_CLEANUP: {{ watchtower_cleanup }}
+      WATCHTOWER_INCLUDE_RESTARTING: {{ watchtower_include_restart }}
+      WATCHTOWER_POLL_INTERVAL: {{ watchtower_poll_interval }}
+    mem_limit: 100m
+    cpus: 0.3
     restart: always

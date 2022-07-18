@@ -47,9 +47,25 @@ services:
   cloudflare-bouncer:
     image: crowdsecurity/cloudflare-bouncer:latest
     container_name: crowdsec_cf_bouncer
+    depends_on:
+      - crowdsec
     volumes:
       - ./crowdsec/cf_bouncer/cfg.yaml:/etc/crowdsec/bouncers/crowdsec-cloudflare-bouncer.yaml
     mem_limit: 100m
     mem_reservation: 10m
+    cpus: 0.3
+    restart: always
+
+  # Container updates
+  watchtower:
+    image: containrrr/watchtower:latest
+    container_name: watchtower
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    environment:
+      WATCHTOWER_CLEANUP: {{ watchtower_cleanup }}
+      WATCHTOWER_INCLUDE_RESTARTING: {{ watchtower_include_restart }}
+      WATCHTOWER_POLL_INTERVAL: {{ watchtower_poll_interval }}
+    mem_limit: 100m
     cpus: 0.3
     restart: always

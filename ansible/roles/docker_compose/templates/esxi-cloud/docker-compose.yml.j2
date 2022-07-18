@@ -17,8 +17,6 @@ services:
       - "./nextcloud/config:/config"
       - "./nextcloud/data:/data"
     restart: always
-    labels:
-      - "diun.enable=true"
 
   nextcloud_db:
     image: mariadb:latest
@@ -32,8 +30,6 @@ services:
     volumes:
       - "./nextcloud/db:/var/lib/mysql"
     restart: always
-    labels:
-      - "diun.enable=true"
 
   nextcloud_redis:
     image: redis:latest
@@ -41,25 +37,17 @@ services:
     environment:
       ALLOW_EMPTY_PASSWORD: {{ allow_empty_password }}
     restart: always
-    labels:
-      - "diun.enable=true"
 
-  # Automatic container updates
-  diun:
-    image: crazymax/diun:latest
-    container_name: diun
-    command: serve
+  # Container updates
+  watchtower:
+    image: containrrr/watchtower:latest
+    container_name: watchtower
     volumes:
-      - "./diun:/data"
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "/var/run/docker.sock:/var/run/docker.sock"
     environment:
-      DIUN_NOTIF_TELEGRAM_CHATIDS: {{ diun_notif_telegram_chatids }}
-      DIUN_NOTIF_TELEGRAM_TOKEN: {{ diun_notif_telegram_token }}
-      DIUN_PROVIDERS_DOCKER: {{ diun_providers_docker }}
-      DIUN_WATCH_SCHEDULE: "{{ diun_watch_schedule }}"
-      DIUN_WATCH_WORKERS: {{ diun_watch_workers }}
-      LOG_JSON: {{ log_json }}
-      LOG_LEVEL: {{ log_level }}
+      WATCHTOWER_CLEANUP: {{ watchtower_cleanup }}
+      WATCHTOWER_INCLUDE_RESTARTING: {{ watchtower_include_restart }}
+      WATCHTOWER_POLL_INTERVAL: {{ watchtower_poll_interval }}
+    mem_limit: 100m
+    cpus: 0.3
     restart: always
-    labels:
-      - "diun.enable=true"

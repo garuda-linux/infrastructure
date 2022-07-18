@@ -9,9 +9,7 @@ dd_logs_enabled: true
 dd_logs_config_container_collect_all: true
 dd_process_agent_enabled: true
 
-# Diun
-diun_providers_docker: true
-diun_watch_schedule: "@hourly"
-diun_watch_workers: 20
-log_json: false
-log_level: info
+# Watchtower
+watchtower_cleanup: true
+watchtower_include_restart: true
+watchtower_poll_interval: 3600

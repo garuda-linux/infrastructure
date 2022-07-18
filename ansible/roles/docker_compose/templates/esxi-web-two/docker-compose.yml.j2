@@ -70,8 +70,6 @@ services:
       DEFAULT_SOURCE_LANG: {{ lingva_source_lang }}
       DEFAULT_TARGET_LANG: {{ lingva_target_lang }}
       SITE_DOMAIN: {{ lingva_site_domain }}
-    mem_limit: 256m
-    memswap_limit: 256m
     ports:
       - "3000:3000"
     restart: always
@@ -225,6 +223,20 @@ services:
       - ytproxy:/app/socket
     mem_limit: 256m
     memswap_limit: 256m
+    restart: always
+
+  # Container updates
+  watchtower:
+    image: containrrr/watchtower:latest
+    container_name: watchtower
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    environment:
+      WATCHTOWER_CLEANUP: {{ watchtower_cleanup }}
+      WATCHTOWER_INCLUDE_RESTARTING: {{ watchtower_include_restart }}
+      WATCHTOWER_POLL_INTERVAL: {{ watchtower_poll_interval }}
+    mem_limit: 100m
+    cpus: 0.3
     restart: always
 
 volumes:
