@@ -1,3 +1,7 @@
 #!/bin/bash
 cd /user/infrastructure/
-bash -l
+if [ "$#" != 0 ]; then
+    "$@"
+else
+    bash -l
+fi

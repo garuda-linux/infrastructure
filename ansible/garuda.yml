@@ -16,18 +16,6 @@
         name: docker_compose
       when: docker_compose | default(false) == true
     - import_role:
-        name: borg_clients
-      when: "'borg_clients' in group_names"
-    - import_role:
-        name: borg_servers
-      when: "'borg_servers' in group_names"
-    - import_role:
-        name: zerotier
-      when: zerotier_member_description is defined
-    - import_role:
-        name: monitoring
-      when: "'monitor' in group_names"
-    - import_role:
         name: systemd
     - import_role:
         name: update_repos
