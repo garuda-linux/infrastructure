@@ -10,7 +10,7 @@ services:
       LIBREDDIT_DEFAULT_THEME: {{ libreddit_default_theme }}
       LIBREDDIT_DEFAULT_USE_HLS: {{ libreddit_default_use_hls }}
     ports:
-      - "8080:8080"
+      - "8083:8080"
     mem_limit: 256m
     memswap_limit: 256m
     restart: always
@@ -88,8 +88,8 @@ services:
       REDIS_HOST: teddit_redis
     ports:
       - "8081:8080"
-    mem_limit: 400m
-    memswap_limit: 400m
+    mem_limit: 600m
+    memswap_limit: 600m
     healthcheck:
       test: ["CMD", "wget" ,"--no-verbose", "--tries=1", "--spider", "http://localhost:8080/about"]
       interval: 1m
@@ -102,8 +102,8 @@ services:
     command: redis-server
     environment:
       REDIS_REPLICATION_MODE: master
-    mem_limit: 256m
-    memswap_limit: 256m
+    mem_limit: 512m
+    memswap_limit: 512m
     restart: always
 
   # Invious YouTube frontend
@@ -124,16 +124,17 @@ services:
         default_user_preferences:
           local: true
           quality: dash
-        disable_proxy: ["livestreams","downloads"]
-        use_quic: true
         admins: ["nico"]
-        https_only: true
-        use_pubsub_feeds: true
-        popular_enabled: true
-        hmac_key: {{ invidious_hmac_key }}
-        domain: invidious.garudalinux.org
-        statistics_enabled: true
         captcha_key: {{ invidious_captcha_key }}
+        disable_proxy: ["livestreams","downloads"]
+        domain: invidious.garudalinux.org
+        external_port: 443
+        hmac_key: {{ invidious_hmac_key }}
+        https_only: true
+        popular_enabled: true
+        statistics_enabled: true
+        use_pubsub_feeds: true
+        use_quic: true
     ports:
       - "3001:3000"
     mem_limit: 1024m
@@ -170,8 +171,8 @@ services:
       - piped_postgres
     volumes:
       - ./piped/config.properties:/app/config.properties:ro
-    mem_limit: 256m
-    memswap_limit: 256m
+    mem_limit: 512m
+    memswap_limit: 512m
     restart: always
 
   piped_frontend:
@@ -219,6 +220,7 @@ services:
 
   ytproxy:
     image: 1337kavin/ytproxy:latest
+    container_name: ytproxy
     volumes:
       - ytproxy:/app/socket
     mem_limit: 256m
