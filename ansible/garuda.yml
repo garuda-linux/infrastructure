@@ -3,18 +3,18 @@
   gather_facts: yes
   become: true
   tasks:
-    - name: Copy authorized_keys
-      copy:
-        src: ./authorized_keys
-        dest: /home/ansible/.ssh/authorized_keys
-        owner: ansible
-        group: ansible
-        mode: "0600"
-    - import_role:
-        name: users_sudo
-    - import_role:
-        name: docker_compose
-      when: docker_compose | default(false) == true
+    #- name: Copy authorized_keys
+      #copy:
+        #src: ./authorized_keys
+        #dest: /home/ansible/.ssh/authorized_keys
+        #owner: ansible
+        #group: ansible
+        #mode: "0600"
+    #- import_role:
+        #name: users_sudo
+    #- import_role:
+        #name: docker_compose
+      #when: docker_compose | default(false) == true
     - import_role:
         name: systemd
     - import_role:

@@ -2,19 +2,37 @@
 
 CF_FILE_PATH={{ nginx_config_dir }}/cloudflare.conf
 
-echo "# Cloudflare" > "$CF_FILE_PATH";
-echo "# - IPv4" >> "$CF_FILE_PATH";
+# Only allow CF proxy IPs to connect
+echo "# Allow only CF IPs to connect" > "$CF_FILE_PATH"
+echo "# - IPv4" >> "$CF_FILE_PATH"
 for i in $(curl -s -L https://www.cloudflare.com/ips-v4); do
-        echo "set_real_ip_from $i;" >> "$CF_FILE_PATH";
+        echo "allow $i;" >> "$CF_FILE_PATH"
+done
+
+echo "" >> "$CF_FILE_PATH"
+echo "# - IPv6" >> $CF_FILE_PATH
+for i in $(curl -s -L https://www.cloudflare.com/ips-v6); do
+        echo "allow $i;" >> "$CF_FILE_PATH"
+done
+
+echo "" >> "$CF_FILE_PATH"
+echo "deny all;" >> "$CF_FILE_PATH"
+
+# Forward real IPs to the webserver
+echo "" >> "$CF_FILE_PATH"
+echo "# Set real IPs of CF visitors" >> "$CF_FILE_PATH"
+echo "# - IPv4" >> "$CF_FILE_PATH"
+for i in $(curl -s -L https://www.cloudflare.com/ips-v4); do
+        echo "set_real_ip_from $i;" >> "$CF_FILE_PATH"
 done
 
 echo "" >> "$CF_FILE_PATH";
 echo "# - IPv6" >> $CF_FILE_PATH;
 for i in $(curl -s -L https://www.cloudflare.com/ips-v6); do
-        echo "set_real_ip_from $i;" >> "$CF_FILE_PATH";
+        echo "set_real_ip_from $i;" >> "$CF_FILE_PATH"
 done
 
-echo "" >> "$CF_FILE_PATH";
-echo "real_ip_header CF-Connecting-IP;" >> "$CF_FILE_PATH";
+echo "" >> "$CF_FILE_PATH"
+echo "real_ip_header CF-Connecting-IP;" >> "$CF_FILE_PATH"
 
 docker restart nginx
