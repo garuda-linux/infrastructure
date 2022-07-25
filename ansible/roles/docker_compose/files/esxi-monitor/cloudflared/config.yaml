@@ -4,8 +4,6 @@ credentials-file: /root/.cloudflared/tunnel.json
 ingress:
   - hostname: netdata.garudalinux.net
     service: http://192.168.1.50:19999
-  - hostname: crowdsec.garudalinux.net
-    service: http://192.168.1.20:3001
   - service: http_status:404
 
 warp-routing:

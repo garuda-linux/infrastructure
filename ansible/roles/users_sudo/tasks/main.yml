@@ -9,11 +9,11 @@
 - name: Add admins & set their group
   user:
     name: "{{ item.name }}"
-    state: present
+    state: "{{ item.state | default('present') }}"
     groups: "{{ item.groups }}"
   loop:
     - { name: "ansible", groups: "wheel" }
-    - { name: "librewish", groups: "wheel" }
+    - { name: "librewish", groups: "wheel", state: absent }
     - { name: "nico", groups: "wheel" }
     - { name: "tne", groups: "wheel" }
 - name: Add regular users
