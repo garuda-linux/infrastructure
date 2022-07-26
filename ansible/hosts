@@ -14,7 +14,6 @@ esxi-monitor
 esxi-repo
 esxi-web
 esxi-web-two
-iso
 sec
 web
 
@@ -45,5 +44,4 @@ esxi-monitor
 esxi-repo
 esxi-web
 esxi-web-two
-iso
 web
