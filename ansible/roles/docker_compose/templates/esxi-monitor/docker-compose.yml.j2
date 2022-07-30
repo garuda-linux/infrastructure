@@ -45,7 +45,7 @@ services:
     restart: always
 
   cloudflare-bouncer:
-    image: crowdsecurity/cloudflare-bouncer:latest
+    image: crowdsecurity/cloudflare-bouncer:v0.0.10-rc1
     container_name: crowdsec_cf_bouncer
     depends_on:
       - crowdsec
