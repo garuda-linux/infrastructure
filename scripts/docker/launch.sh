@@ -1,5 +1,5 @@
 #!/bin/bash
-cd /user/infrastructure/
+cd /user/infrastructure/ansible
 if [ "$#" != 0 ]; then
     "$@"
 else
