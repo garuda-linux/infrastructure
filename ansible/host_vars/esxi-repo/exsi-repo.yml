@@ -9,6 +9,7 @@ docker_compose: true
 caur_cluster_name: garuda-repo
 caur_db_name: garuda
 caur_deploy_label: '"Maximus 🐉"'
+caur_fill_dest: http://repo.garudalinux.org/repos/garuda/pkgs.files.txt
 caur_lower_pkgs: chaotic-mirrorlist
 caur_packager: '"Garuda Builder <team@garudalinux.org>"'
 caur_primary: true

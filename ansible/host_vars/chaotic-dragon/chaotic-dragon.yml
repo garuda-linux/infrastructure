@@ -13,9 +13,9 @@ tz: Europe/Berlin
 
 # Toolbox
 caur_cluster_name: dragon-cluster
-caur_deploy_label: "Chaotic Dragon 🐉"
+caur_deploy_label: '"Chaotic Dragon 🐉"'
 caur_overlay_type: kernel
-caur_packager: "Nico Jensch <dr460nf1r3@chaotic.cx>"
+caur_packager: '"Nico Jensch <dr460nf1r3@chaotic.cx>"'
 caur_routines: /var/cache/chaotic/routines
 caur_sign_key: BF773B6877808D28
 caur_sign_realname: "Nico Jensch"

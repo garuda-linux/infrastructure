@@ -14,9 +14,9 @@ tz: Europe/Berlin
 
 # Toolbox
 caur_cluster_name: garuda-cluster
-caur_deploy_label: "Temeraire 🐉"
+caur_deploy_label: '"Temeraire 🐉"'
 caur_overlay_type: kernel
-caur_packager: "Nico Jensch <dr460nf1r3@chaotic.cx>"
+caur_packager: '"Nico Jensch <dr460nf1r3@chaotic.cx>"'
 caur_repoctl_db_file: /srv/http/repos/chaotic-aur/x86_64/chaotic-aur.db.tar.zst
 caur_repoctl_db_url: ""
 caur_routines: /var/cache/chaotic/routines
@@ -24,7 +24,7 @@ caur_sign_key: BF773B6877808D28
 caur_sign_realname: "Nico Jensch"
 caur_sign_user: root
 caur_sign_user_root: /root
-caur_telegram_tag: "@dr460nf1r3"
+caur_telegram_tag: '"@dr460nf1r3"'
 caur_type: primary
 caur_url: https://builds.garudalinux.org/repos/chaotic-aur/x86_64
 repoctl_config: /usr/local/etc/chaotic-repoctl.toml
