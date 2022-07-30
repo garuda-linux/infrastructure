@@ -43,15 +43,3 @@ services:
     mem_reservation: 20m
     cpus: 0.5
     restart: always
-
-  cloudflare-bouncer:
-    image: crowdsecurity/cloudflare-bouncer:v0.0.10-rc1
-    container_name: crowdsec_cf_bouncer
-    depends_on:
-      - crowdsec
-    volumes:
-      - ./crowdsec/cf_bouncer/cfg.yaml:/etc/crowdsec/bouncers/crowdsec-cloudflare-bouncer.yaml
-    mem_limit: 100m
-    mem_reservation: 10m
-    cpus: 0.3
-    restart: always
