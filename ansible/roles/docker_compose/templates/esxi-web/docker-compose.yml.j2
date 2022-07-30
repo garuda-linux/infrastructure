@@ -18,9 +18,9 @@ services:
       - 80:80
       - 443:443
       - 443:443/udp
-    mem_limit: 1000m
-    mem_reservation: 200m
-    cpus: 2.0
+    mem_limit: 1024m
+    mem_reservation: 256m
+    cpus: 3.0
     restart: always
     labels:
       com.datadoghq.ad.check_names: '["nginx"]'
@@ -64,8 +64,8 @@ services:
       WHOOGLE_CONFIG_VIEW_IMAGE: {{ whoogle_config_view_image }}
       WHOOGLE_RESULTS_PER_PAGE: {{ whoogle_results_per_page }}
     pids_limit: 50
-    mem_limit: 256mb
-    memswap_limit: 256mb
+    mem_limit: 1024mb
+    memswap_limit: 1024mb
     cpus: 1.0
     restart: always
 

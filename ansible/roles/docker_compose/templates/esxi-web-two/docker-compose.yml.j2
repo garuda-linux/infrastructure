@@ -88,8 +88,8 @@ services:
       REDIS_HOST: teddit_redis
     ports:
       - "8081:8080"
-    mem_limit: 600m
-    memswap_limit: 600m
+    mem_limit: 1024m
+    memswap_limit: 1024m
     healthcheck:
       test: ["CMD", "wget" ,"--no-verbose", "--tries=1", "--spider", "http://localhost:8080/about"]
       interval: 1m
@@ -171,8 +171,8 @@ services:
       - piped_postgres
     volumes:
       - ./piped/config.properties:/app/config.properties:ro
-    mem_limit: 512m
-    memswap_limit: 512m
+    mem_limit: 1024m
+    memswap_limit: 1024m
     restart: always
 
   piped_frontend:
