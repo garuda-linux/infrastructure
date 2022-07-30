@@ -167,15 +167,17 @@ services:
     volumes:
       - "./bitwarden:/data"
     environment:
-      WEBSOCKET_ENABLED: {{ websocket_enabled }}
+      DOMAIN: {{ domain }}
       SIGNUPS_ALLOWED: {{ signups_allowed }}
-      SMTP_HOST: {{ smtp_host }}
       SMTP_FROM: {{ smtp_from }}
+      SMTP_HOST: {{ smtp_host }}
+      SMTP_PASSWORD: {{ smtp_password }}
       SMTP_PORT: {{ smtp_port }}
       SMTP_SSL: {{ smtp_ssl }}
       SMTP_USERNAME: {{ smtp_username }}
-      SMTP_PASSWORD: {{ smtp_password }}
-      DOMAIN: {{ domain }}
+      WEBSOCKET_ENABLED: {{ websocket_enabled }}
+      YUBICO_CLIENT_ID: {{ yubico_client_id }}
+      YUBICO_SECRET_KEY: {{ yubico_secret_key }}
     mem_limit: 512m
     mem_reservation: 10m
     cpus: 0.2
