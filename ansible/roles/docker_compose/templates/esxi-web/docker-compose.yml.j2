@@ -211,6 +211,8 @@ services:
     container_name: mongodb
     ports:
       - 27017:27017
+    volumes:
+      - "./mongo:/data/db"
     environment:
       MONGO_INITDB_ROOT_USERNAME: {{ mongo_initdb_root_username }}
       MONGO_INITDB_ROOT_PASSWORD: {{ mongo_initdb_root_password }}

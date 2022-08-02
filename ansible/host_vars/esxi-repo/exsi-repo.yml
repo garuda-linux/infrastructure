@@ -2,7 +2,6 @@
 actual_hostname: esxi-repo
 ansible_host: 65.108.140.36
 ansible_port: 223
-chaotic_builder: true
 docker_compose: true
 
 # Toolbox
