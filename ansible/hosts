@@ -9,7 +9,6 @@ build
 chaotic-dragon
 esxi-cloud
 esxi-forum
-esxi-iso
 esxi-monitor
 esxi-repo
 esxi-web
@@ -39,7 +38,6 @@ build
 chaotic-dragon
 esxi-cloud
 esxi-forum
-esxi-iso
 esxi-monitor
 esxi-repo
 esxi-web
