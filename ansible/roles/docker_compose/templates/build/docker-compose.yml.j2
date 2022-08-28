@@ -46,11 +46,12 @@ services:
 
   # Letsencrypt SSL certificates
   certbot:
-    image: certbot/certbot:latest
+    image: certbot/dns-cloudflare:latest
     container_name: certbot
     volumes:
       - "./letsencrypt/etc:/etc/letsencrypt"
       - "./letsencrypt/var:/var/lib/letsencrypt"
+      - "/root/.cloudflare:/root/.cloudflare"
     entrypoint: "/bin/sh -c 'trap exit TERM; sleep 10; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
     mem_limit: 50m
     cpus: 0.1
