@@ -171,8 +171,8 @@ services:
       - piped_postgres
     volumes:
       - ./piped/config.properties:/app/config.properties:ro
-    mem_limit: 1024m
-    memswap_limit: 1024m
+    mem_limit: 2048m
+    memswap_limit: 2048m
     restart: always
 
   piped_frontend:
