@@ -63,3 +63,30 @@
     manage_dir: true
     user: borg
   with_items: "{{ ssh_keys.results }}"
+- name: Install compact_repo script
+  copy:
+    dest: /usr/local/bin/compact_repo.sh
+    group: root
+    mode: 0644
+    owner: root
+    src: compact_repo.sh
+- name: Make compact_repo script executable
+  file:
+    dest: /usr/local/bin/compact_repo.sh
+    mode: a+x
+- name: Install systemd units for compact repo task
+  copy:
+    dest: /etc/systemd/system/{{ item }}
+    group: root
+    mode: 0644
+    owner: root
+    src: "{{ item }}"
+  loop:
+    - compact_repo.service
+    - compact_repo.timer
+  notify: systemd daemon-reload
+- name: Enable compact_repo.timer
+  systemd:
+    enabled: yes
+    name: compact_repo.timer
+    state: started

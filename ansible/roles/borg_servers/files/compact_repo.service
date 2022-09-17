@@ -1,0 +1,8 @@
+[Unit]
+Description=Compact borg repos
+
+[Service]
+Type=oneshot
+Restart=on-failure
+RestartSec=5m
+ExecStart=/usr/local/bin/compact_repos.sh
