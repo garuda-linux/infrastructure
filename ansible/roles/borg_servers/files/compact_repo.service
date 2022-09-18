@@ -5,4 +5,5 @@ Description=Compact borg repos
 Type=oneshot
 Restart=on-failure
 RestartSec=5m
+User=borg
 ExecStart=/usr/local/bin/compact_repos.sh
